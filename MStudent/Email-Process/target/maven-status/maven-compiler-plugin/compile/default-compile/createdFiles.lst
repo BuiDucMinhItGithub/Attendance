@@ -1,0 +1,9 @@
+com\mstudent\model\Notification$NotificationBuilder.class
+com\mstudent\repository\NotificationRepository.class
+com\mstudent\config\MailConfig.class
+com\mstudent\config\KafkaConfig.class
+com\mstudent\Main.class
+com\mstudent\model\Notification.class
+com\mstudent\service\NotificationService.class
+com\mstudent\config\MyConstants.class
+com\mstudent\controller\NotificationController.class
