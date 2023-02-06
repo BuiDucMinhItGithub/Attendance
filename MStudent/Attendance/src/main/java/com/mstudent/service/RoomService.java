@@ -11,7 +11,6 @@ import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -46,10 +45,8 @@ public class RoomService {
         return roomRepository.findById(id).get();
     }
 
-    public List<Room> getRoomByTeacher(){
-        Specification<Room> specification = hasRoomWithTeacherId(Long.parseLong("1"));
+    public List<Room> getRoomByTeacher(Long id){
+        Specification<Room> specification = hasRoomWithTeacherId(id);
         return roomRepository.findAll(specification);
     }
-
-
 }

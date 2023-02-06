@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -49,6 +50,9 @@ public class Room {
 
     @Column(name = "state")
     private String state;
+
+    @Column(name = "price_per_lesson")
+    private BigDecimal pricePerLesson;
 
     @ManyToMany
     @JoinTable(name = "student_room", joinColumns = @JoinColumn(name = "room_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))

@@ -19,14 +19,9 @@ public class RoomApi {
     this.roomService = roomService;
   }
 
-  @GetMapping
-  public List<Room> getAllRoomByTeacher(){
-    try{
-      return roomService.getRoomByTeacher();
-    } catch (Exception ex){
-      System.out.println(ex.getMessage());
-    }
-    return null;
+  @GetMapping("/teacher/{id}")
+  public List<Room> getAllRoomByTeacher(@PathVariable Long id){
+      return roomService.getRoomByTeacher(id);
   }
   @PostMapping
   public ResponseEntity<Room> insert(@RequestBody CreateRoomRequest createRoomRequest){

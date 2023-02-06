@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-05T00:21:18+0700",
+    date = "2023-02-06T14:49:08+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -29,6 +29,7 @@ public class RoomMapperImpl implements RoomMapper {
         room.setStartDate( createRoomRequest.getStartDate() );
         room.setTeacher( createRoomRequest.getTeacher() );
         room.setNumberOfStudent( createRoomRequest.getNumberOfStudent() );
+        room.setPricePerLesson( createRoomRequest.getPricePerLesson() );
         List<Student> list = createRoomRequest.getStudents();
         if ( list != null ) {
             room.setStudents( new ArrayList<Student>( list ) );
@@ -51,6 +52,7 @@ public class RoomMapperImpl implements RoomMapper {
         room.setTeacher( updateRoomRequest.getTeacher() );
         room.setNumberOfStudent( updateRoomRequest.getNumberOfStudent() );
         room.setState( updateRoomRequest.getState() );
+        room.setPricePerLesson( updateRoomRequest.getPricePerLesson() );
         List<Student> list = updateRoomRequest.getStudents();
         if ( list != null ) {
             room.setStudents( new ArrayList<Student>( list ) );
