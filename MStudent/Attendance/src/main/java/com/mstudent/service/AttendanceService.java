@@ -1,13 +1,24 @@
 package com.mstudent.service;
 
+import com.mstudent.enums.CostState;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.dto.request.CreateAttendanceRequest;
 import com.mstudent.model.dto.request.StudentAttendance;
 import com.mstudent.model.dto.request.UpdateAttendanceRequest;
 import com.mstudent.model.entity.Attendance;
+import com.mstudent.model.entity.Cost;
+import com.mstudent.model.entity.Room;
+import com.mstudent.model.entity.Student;
 import com.mstudent.repository.AttendanceRepository;
+import com.mstudent.repository.CostRepository;
 import com.mstudent.repository.RoomRepository;
 import com.mstudent.repository.StudentRepository;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,11 +36,14 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
+    private final CostRepository costRepository;
 
-    public AttendanceService(AttendanceRepository attendanceRepository, StudentRepository studentRepository, RoomRepository roomRepository) {
+    public AttendanceService(AttendanceRepository attendanceRepository, StudentRepository studentRepository, RoomRepository roomRepository,
+        CostRepository costRepository) {
         this.attendanceRepository = attendanceRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
+        this.costRepository = costRepository;
     }
 
     public List<Attendance> insert(CreateAttendanceRequest createAttendanceRequest){
@@ -83,6 +97,7 @@ public class AttendanceService {
             attendance.setStudent(studentRepository.findById(studentAttendance.getId()).get());
             attendance.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
             attendance.setDate(createAttendanceRequest.getDate());
+            attendance.setMonth(getMonthAndYear(createAttendanceRequest.getDate()));
             attendance.setState(studentAttendance.getState());
             attendances.add(attendance);
         });
@@ -107,6 +122,7 @@ public class AttendanceService {
                 attendanceUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
                 attendanceUpdate.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
                 attendanceUpdate.setDate(updateAttendanceRequest.getDate());
+                attendanceUpdate.setMonth(getMonthAndYear(updateAttendanceRequest.getDate()));
                 attendanceUpdate.setState(studentAttendance.getState());
                 attendanceRepository.save(attendanceUpdate);
                 // Gui kafka tai day
@@ -114,5 +130,42 @@ public class AttendanceService {
         });
         return attendanceRepository.findAllByRoomIdAndDate(updateAttendanceRequest.getRoomId(),
             updateAttendanceRequest.getDate());
+    }
+
+    public boolean processPricePerMonth(Long roomId, Date date){
+        // Lay danh sach diem danh cua thang
+        List<Attendance> attendances = attendanceRepository.findAllByRoomIdAndDate(roomId, date);
+        Room room = roomRepository.findById(roomId).get();
+        List<Student> students = room.getStudents();
+        List<Cost> costs = new ArrayList<>();
+
+        students.forEach(student -> {
+            List<Attendance> attendancesOfStudents =
+                attendanceRepository.findAllByRoomAndStudentIdAndMonth( getMonthAndYear(date), roomId, student.getId());
+            Cost cost = new Cost();
+            cost.setPrice(room.getPricePerLesson().subtract(
+                BigDecimal.valueOf(attendancesOfStudents.size())));
+            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            int month = localDate.getMonthValue();
+            cost.setMonth(month);
+            cost.setStudent(student);
+            cost.setNumberOfLesson(attendancesOfStudents.size());
+            cost.setRoom(room);
+            cost.setState(CostState.NOT_YET.getValue());
+            costs.add(cost);
+        });
+
+        if(students.size() >= costs.size()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public String getMonthAndYear(Date date){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        String strDate = dateFormat.format(date);
+        String[] splits = strDate.split("-");
+        return splits[0].concat(splits[1]);
     }
 }

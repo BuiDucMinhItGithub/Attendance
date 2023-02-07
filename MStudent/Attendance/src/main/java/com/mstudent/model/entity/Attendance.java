@@ -24,6 +24,9 @@ public class Attendance {
     @JsonFormat(pattern="dd-MM-yyyy")
     private Date date;
 
+    @Column(name = "month")
+    private String month;
+
     @Column(name = "state")
     private String state;
 

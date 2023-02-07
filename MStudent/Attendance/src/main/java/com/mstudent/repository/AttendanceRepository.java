@@ -42,4 +42,12 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
       + "AND a.date < :toDate")
   List<Attendance> findAllByRoomAndStudentIdWithFromToDate(Date fromDate, Date toDate, Long roomId, Long studentId);
 
+  @Query("SELECT a FROM Attendance a "
+      + "JOIN Room r ON a.room.id = r.id "
+      + "JOIN Student s ON a.student.id = s.id "
+      + "WHERE r.id = :roomId "
+      + "AND s.id = :studentId "
+      + "AND a.month = :month")
+  List<Attendance> findAllByRoomAndStudentIdAndMonth(String month, Long roomId, Long studentId);
+
 }
