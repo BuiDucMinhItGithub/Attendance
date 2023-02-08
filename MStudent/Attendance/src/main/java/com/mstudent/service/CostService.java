@@ -22,7 +22,7 @@ public class CostService {
   public Cost updateDone(Long id) throws NotFoundException {
     Cost cost = costRepository.findById(id).get();
     if(Objects.isNull(cost)){
-      throw new NotFoundException("Khong tim thay");
+      throw new NotFoundException("exception.notfound");
     }
     cost.setState(CostState.DONE.getValue());
     return costRepository.save(cost);
@@ -31,7 +31,7 @@ public class CostService {
   public Cost getById(Long id) throws NotFoundException {
     Cost cost = costRepository.findById(id).get();
     if(Objects.isNull(cost)){
-      throw new NotFoundException("Khong tim thay");
+      throw new NotFoundException("exception.notfound");
     }
     return cost;
   }

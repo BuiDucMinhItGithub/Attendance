@@ -1,5 +1,6 @@
-package com.mstudent.model.dto.request;
+package com.mstudent.model.dto.request.Attendance;
 
+import com.mstudent.model.dto.request.Attendance.StudentAttendance;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

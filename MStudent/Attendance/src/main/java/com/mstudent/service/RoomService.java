@@ -5,11 +5,10 @@ import static com.mstudent.specification.RoomSpecification.hasRoomWithTeacherId;
 import com.mstudent.enums.RoomState;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.RoomMapper;
-import com.mstudent.model.dto.request.CreateRoomRequest;
-import com.mstudent.model.dto.request.UpdateRoomRequest;
+import com.mstudent.model.dto.request.Room.CreateRoomRequest;
+import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
 import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,7 +36,7 @@ public class RoomService {
         Room room = roomRepository.findById(updateRoomRequest.getId()).get();
         Room roomUpdate = roomMapper.updateRequestToEntity(updateRoomRequest);
         if(Objects.isNull(room)){
-            throw new NotFoundException("exception_not_found");
+            throw new NotFoundException("exception.notfound");
         }
         roomUpdate.setState(room.getState());
         return roomRepository.save(roomUpdate);
@@ -46,7 +45,7 @@ public class RoomService {
     public Room getById(Long id) throws NotFoundException {
         Room room = roomRepository.findById(id).get();
         if(Objects.isNull(room)){
-            throw new NotFoundException("exception_not_found");
+            throw new NotFoundException("exception.notfound");
         }
         return room;
     }
@@ -55,7 +54,7 @@ public class RoomService {
         Specification<Room> specification = hasRoomWithTeacherId(id);
         List<Room> rooms =  roomRepository.findAll(specification);
         if(CollectionUtils.isEmpty(rooms)){
-            throw new NotFoundException("exception_list_null");
+            throw new NotFoundException("exception.list.null");
         }
         return rooms;
     }

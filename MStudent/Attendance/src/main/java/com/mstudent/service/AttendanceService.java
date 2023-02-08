@@ -3,9 +3,9 @@ package com.mstudent.service;
 import com.mstudent.enums.AttendanceState;
 import com.mstudent.enums.CostState;
 import com.mstudent.exception.NotFoundException;
-import com.mstudent.model.dto.request.CreateAttendanceRequest;
-import com.mstudent.model.dto.request.StudentAttendance;
-import com.mstudent.model.dto.request.UpdateAttendanceRequest;
+import com.mstudent.model.dto.request.Attendance.CreateAttendanceRequest;
+import com.mstudent.model.dto.request.Attendance.StudentAttendance;
+import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
 import com.mstudent.model.entity.Attendance;
 import com.mstudent.model.entity.Cost;
 import com.mstudent.model.entity.Room;
@@ -54,7 +54,7 @@ public class AttendanceService {
         log.info("Start retrieve attendance with id = %s", id);
         Optional<Attendance> attendanceOptional = attendanceRepository.findById(id);
         if(!attendanceOptional.isPresent()){
-            throw new NotFoundException("exception_not_found");
+            throw new NotFoundException("exception.notfound");
         }
         return attendanceOptional.get();
     }
@@ -63,7 +63,7 @@ public class AttendanceService {
         log.info("Start retrieve attendance with room-id = %x and date = %y", roomId, date);
         List<Attendance> attendances = attendanceRepository.findAllByRoomIdAndDate(roomId, date);
         if(CollectionUtils.isEmpty(attendances)){
-            throw new NotFoundException("exception_list_null");
+            throw new NotFoundException("exception.list.null");
         }
         return attendances;
     }
@@ -72,7 +72,7 @@ public class AttendanceService {
         log.info("Start retrieve all attendances");
         List<Attendance> attendances = attendanceRepository.findAll();
         if(CollectionUtils.isEmpty(attendances)){
-            throw new NotFoundException("exception_list_null");
+            throw new NotFoundException("exception.list.null");
         }
         return attendances;
     }
@@ -87,7 +87,7 @@ public class AttendanceService {
         throws NotFoundException {
         List<Attendance> attendances =  attendanceRepository.findByRoomAndRangeDate(fromDate, toDate, roomId);
         if(CollectionUtils.isEmpty(attendances)){
-            throw new NotFoundException("exception_list_null");
+            throw new NotFoundException("exception.list.null");
         }
         return attendances;
     }
@@ -96,7 +96,7 @@ public class AttendanceService {
         throws NotFoundException {
         List<Attendance> attendances =  attendanceRepository.findAllByRoomAndStudentIdWithFromToDate(fromDate, toDate, roomId,studentId);
         if(CollectionUtils.isEmpty(attendances)){
-            throw new NotFoundException("exception_list_null");
+            throw new NotFoundException("exception.list.null");
         }
         return attendances;
     }
@@ -155,11 +155,11 @@ public class AttendanceService {
         log.info("Start retrieve room with id = %s",roomId);
         Room room = roomRepository.findById(roomId).get();
         if(Objects.isNull(room)){
-            throw new NotFoundException("exception_not_found");
+            throw new NotFoundException("exception.notfound");
         }
         List<Student> students = room.getStudents();
         if(CollectionUtils.isEmpty(students)){
-            throw new NotFoundException("exception_list_null");
+            throw new NotFoundException("exception.list.null");
         }
         List<Cost> costs = new ArrayList<>();
 

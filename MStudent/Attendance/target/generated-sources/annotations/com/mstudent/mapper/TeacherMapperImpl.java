@@ -1,7 +1,7 @@
 package com.mstudent.mapper;
 
-import com.mstudent.model.dto.request.CreateTeacherRequest;
-import com.mstudent.model.dto.request.UpdateTeacherRequest;
+import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
+import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
 import com.mstudent.model.entity.Teacher;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;

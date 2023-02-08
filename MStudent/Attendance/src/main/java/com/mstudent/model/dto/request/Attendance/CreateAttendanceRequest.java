@@ -1,4 +1,4 @@
-package com.mstudent.model.dto.request;
+package com.mstudent.model.dto.request.Attendance;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

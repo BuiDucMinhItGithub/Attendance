@@ -1,7 +1,7 @@
 package com.mstudent.controller;
 
-import com.mstudent.model.dto.request.CreateStudentRequest;
-import com.mstudent.model.dto.request.UpdateStudentRequest;
+import com.mstudent.model.dto.request.Student.CreateStudentRequest;
+import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
 import com.mstudent.model.entity.Student;
 import com.mstudent.service.StudentService;
 import java.util.List;

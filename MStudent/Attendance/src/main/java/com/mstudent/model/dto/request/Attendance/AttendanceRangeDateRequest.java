@@ -1,4 +1,4 @@
-package com.mstudent.model.dto.request;
+package com.mstudent.model.dto.request.Attendance;
 
 import java.util.Date;
 import lombok.AllArgsConstructor;

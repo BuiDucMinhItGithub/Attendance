@@ -1,7 +1,5 @@
 package com.mstudent.mapper;
 
-import com.mstudent.model.dto.request.CreateAttendanceRequest;
-import com.mstudent.model.entity.Attendance;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

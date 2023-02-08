@@ -2,8 +2,8 @@ package com.mstudent.service;
 
 import com.mstudent.enums.StudentState;
 import com.mstudent.mapper.StudentMapper;
-import com.mstudent.model.dto.request.CreateStudentRequest;
-import com.mstudent.model.dto.request.UpdateStudentRequest;
+import com.mstudent.model.dto.request.Student.CreateStudentRequest;
+import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
 import com.mstudent.model.entity.Student;
 import com.mstudent.repository.StudentRepository;
 import org.springframework.data.jpa.domain.Specification;

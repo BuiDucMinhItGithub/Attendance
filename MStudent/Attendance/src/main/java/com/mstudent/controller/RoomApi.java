@@ -1,8 +1,8 @@
 package com.mstudent.controller;
 
 import com.mstudent.exception.NotFoundException;
-import com.mstudent.model.dto.request.CreateRoomRequest;
-import com.mstudent.model.dto.request.UpdateRoomRequest;
+import com.mstudent.model.dto.request.Room.CreateRoomRequest;
+import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
 import com.mstudent.model.entity.Room;
 import com.mstudent.service.RoomService;
 import java.util.List;

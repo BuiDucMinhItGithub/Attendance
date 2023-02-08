@@ -1,11 +1,11 @@
 package com.mstudent.controller;
 
 import com.mstudent.exception.NotFoundException;
-import com.mstudent.model.dto.request.AttendanceRangeDateRequest;
-import com.mstudent.model.dto.request.AttendanceToProcessCostRequest;
-import com.mstudent.model.dto.request.AttendanceTodayRequest;
-import com.mstudent.model.dto.request.CreateAttendanceRequest;
-import com.mstudent.model.dto.request.UpdateAttendanceRequest;
+import com.mstudent.model.dto.request.Attendance.AttendanceRangeDateRequest;
+import com.mstudent.model.dto.request.Attendance.AttendanceToProcessCostRequest;
+import com.mstudent.model.dto.request.Attendance.AttendanceTodayRequest;
+import com.mstudent.model.dto.request.Attendance.CreateAttendanceRequest;
+import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
 import com.mstudent.model.entity.Attendance;
 import com.mstudent.service.AttendanceService;
 import java.util.List;
