@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class RoomService {
@@ -36,18 +37,26 @@ public class RoomService {
         Room room = roomRepository.findById(updateRoomRequest.getId()).get();
         Room roomUpdate = roomMapper.updateRequestToEntity(updateRoomRequest);
         if(Objects.isNull(room)){
-            throw new NotFoundException("Không tìm thấy lớp");
+            throw new NotFoundException("exception_not_found");
         }
         roomUpdate.setState(room.getState());
         return roomRepository.save(roomUpdate);
     }
 
-    public Room getById(Long id){
-        return roomRepository.findById(id).get();
+    public Room getById(Long id) throws NotFoundException {
+        Room room = roomRepository.findById(id).get();
+        if(Objects.isNull(room)){
+            throw new NotFoundException("exception_not_found");
+        }
+        return room;
     }
 
-    public List<Room> getRoomByTeacher(Long id){
+    public List<Room> getRoomByTeacher(Long id) throws NotFoundException {
         Specification<Room> specification = hasRoomWithTeacherId(id);
-        return roomRepository.findAll(specification);
+        List<Room> rooms =  roomRepository.findAll(specification);
+        if(CollectionUtils.isEmpty(rooms)){
+            throw new NotFoundException("exception_list_null");
+        }
+        return rooms;
     }
 }

@@ -20,7 +20,7 @@ public class RoomApi {
   }
 
   @GetMapping("/teacher/{id}")
-  public List<Room> getAllRoomByTeacher(@PathVariable Long id){
+  public List<Room> getAllRoomByTeacher(@PathVariable Long id) throws NotFoundException {
       return roomService.getRoomByTeacher(id);
   }
   @PostMapping
@@ -32,7 +32,7 @@ public class RoomApi {
     return ResponseEntity.ok(roomService.update(updateRoomRequest));
   }
   @GetMapping("/{id}")
-  public ResponseEntity<Room> getOne(@PathVariable Long id){
+  public ResponseEntity<Room> getOne(@PathVariable Long id) throws NotFoundException {
     return ResponseEntity.ok(roomService.getById(id));
   }
 }

@@ -1,7 +1,10 @@
 package com.mstudent.service;
 
+import com.mstudent.enums.CostState;
+import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.entity.Cost;
 import com.mstudent.repository.CostRepository;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,15 +19,21 @@ public class CostService {
     return costRepository.save(cost);
   }
 
-  public Cost update(Cost cost){
-    Cost cost1 = costRepository.findById(cost.getId()).get();
-    cost1.setId(cost.getId());
-    cost1.setRoom(cost.getRoom());
-    return costRepository.save(cost1);
+  public Cost updateDone(Long id) throws NotFoundException {
+    Cost cost = costRepository.findById(id).get();
+    if(Objects.isNull(cost)){
+      throw new NotFoundException("Khong tim thay");
+    }
+    cost.setState(CostState.DONE.getValue());
+    return costRepository.save(cost);
   }
 
-  public Cost getById(Long id){
-    return costRepository.findById(id).get();
+  public Cost getById(Long id) throws NotFoundException {
+    Cost cost = costRepository.findById(id).get();
+    if(Objects.isNull(cost)){
+      throw new NotFoundException("Khong tim thay");
+    }
+    return cost;
   }
 
 }
