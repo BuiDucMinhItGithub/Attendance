@@ -2,6 +2,7 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.model.entity.Student;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-06T14:49:08+0700",
+    date = "2023-02-08T15:23:26+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -59,5 +60,37 @@ public class RoomMapperImpl implements RoomMapper {
         }
 
         return room;
+    }
+
+    @Override
+    public RoomResponse entityToResponse(Room room) {
+        if ( room == null ) {
+            return null;
+        }
+
+        RoomResponse roomResponse = new RoomResponse();
+
+        roomResponse.setId( room.getId() );
+        roomResponse.setStartDate( room.getStartDate() );
+        roomResponse.setEndDate( room.getEndDate() );
+        roomResponse.setNumberOfStudent( room.getNumberOfStudent() );
+        roomResponse.setState( room.getState() );
+        roomResponse.setPricePerLesson( room.getPricePerLesson() );
+
+        return roomResponse;
+    }
+
+    @Override
+    public List<RoomResponse> listEntityToResponse(List<Room> rooms) {
+        if ( rooms == null ) {
+            return null;
+        }
+
+        List<RoomResponse> list = new ArrayList<RoomResponse>( rooms.size() );
+        for ( Room room : rooms ) {
+            list.add( entityToResponse( room ) );
+        }
+
+        return list;
     }
 }

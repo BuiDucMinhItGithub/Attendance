@@ -1,13 +1,17 @@
 package com.mstudent.service;
 
 import com.mstudent.enums.StudentState;
+import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.StudentMapper;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
+import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.entity.Student;
 import com.mstudent.repository.StudentRepository;
+import java.util.Objects;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -25,27 +29,40 @@ public class StudentService {
         this.studentMapper = studentMapper;
     }
 
-    public Student insert(CreateStudentRequest createStudentRequest){
+    public StudentResponse insert(CreateStudentRequest createStudentRequest){
         Student student = studentMapper.createRequestToEntity(createStudentRequest);
         student.setState(StudentState.ACTIVE.getValue());
-        return studentRepository.save(student);
+        studentRepository.save(student);
+        return studentMapper.entityToResponse(student);
     }
 
-    public Student update(UpdateStudentRequest updateStudentRequest){
+    public StudentResponse update(UpdateStudentRequest updateStudentRequest) throws NotFoundException {
         Student student = studentRepository.findById(updateStudentRequest.getId()).get();
+        if(Objects.isNull(student)){
+            throw new NotFoundException("exception.notfound");
+        }
         Student studentUpdate = studentMapper.updateRequestToEntity(updateStudentRequest);
         if(!StringUtils.hasText(studentUpdate.getState())){
             studentUpdate.setState(student.getState());
         }
-        return studentRepository.save(studentUpdate);
+        studentRepository.save(studentUpdate);
+        return studentMapper.entityToResponse(studentUpdate);
     }
 
-    public Student getById(Long id){
-        return studentRepository.findById(id).get();
+    public StudentResponse getById(Long id) throws NotFoundException {
+        Student student = studentRepository.findById(id).get();
+        if(Objects.isNull(student)){
+            throw new NotFoundException("exception.notfound");
+        }
+        return studentMapper.entityToResponse(student);
     }
 
-    public List<Student> getListByRoomId(Long id){
+    public List<StudentResponse> getListByRoomId(Long id) throws NotFoundException {
         Specification<Student> specification = hasRoomWithId(id);
-        return studentRepository.findAll(specification);
+        List<Student> students = studentRepository.findAll(specification);;
+        if(CollectionUtils.isEmpty(students)){
+            throw new NotFoundException("exception.list.null");
+        }
+        return studentMapper.listEntityToResponse(students);
     }
 }

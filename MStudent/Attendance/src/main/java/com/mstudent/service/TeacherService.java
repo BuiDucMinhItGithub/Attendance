@@ -2,16 +2,20 @@ package com.mstudent.service;
 
 import com.mstudent.enums.RoleType;
 import com.mstudent.enums.TeacherState;
+import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.TeacherMapper;
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
 import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
+import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.model.entity.Teacher;
 import com.mstudent.repository.TeacherRepository;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.List;
 
 @Service
 public class TeacherService {
@@ -26,41 +30,63 @@ public class TeacherService {
         this.teacherMapper = teacherMapper;
     }
 
-    public Teacher insert(CreateTeacherRequest createTeacherRequest){
+    public TeacherResponse insert(CreateTeacherRequest createTeacherRequest){
         Teacher teacher = teacherMapper.createRequestToEntity(createTeacherRequest);
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacher.setRooms(null);
         teacher.setRole(RoleType.TEACHER.getValue());
         teacher.setState(TeacherState.ACTIVE.getValue());
-        return teacherRepository.save(teacher);
+        teacherRepository.save(teacher);
+        return teacherMapper.entityToResponse(teacher);
     }
 
-    public Teacher update(UpdateTeacherRequest updateTeacherRequest){
+    public TeacherResponse update(UpdateTeacherRequest updateTeacherRequest)
+        throws NotFoundException {
         Teacher teacher = teacherRepository.findById(updateTeacherRequest.getId()).get();
+        if(Objects.isNull(teacher)){
+            throw new NotFoundException("exception.notfound");
+        }
         Teacher teacherUpdate = teacherMapper.updateRequestToEntity(updateTeacherRequest);
         if(!StringUtils.hasText(updateTeacherRequest.getState())){
             teacherUpdate.setState(teacher.getState());
         }
         teacherUpdate.setRole(teacher.getRole());
-       return teacherRepository.save(teacherUpdate);
+        teacherRepository.save(teacherUpdate);
+       return teacherMapper.entityToResponse(teacherUpdate);
     }
 
-    public Teacher stopTeacher(Long id){
+    public TeacherResponse stopTeacher(Long id) throws NotFoundException {
         Teacher teacher = teacherRepository.findById(id).get();
+        if(Objects.isNull(teacher)){
+            throw new NotFoundException("exception.notfound");
+        }
         teacher.setState(TeacherState.DEACTIVE.getValue());
-        return teacherRepository.save(teacher);
+        teacherRepository.save(teacher);
+        return teacherMapper.entityToResponse(teacher);
     }
 
-    public List<Teacher> getList(){
-        return teacherRepository.findAll();
+    public List<TeacherResponse> getList() throws NotFoundException {
+        List<Teacher> teachers = teacherRepository.findAll();
+        if(CollectionUtils.isEmpty(teachers)){
+            throw new NotFoundException("exception.list.null");
+        }
+        return teacherMapper.listEntityToResponse(teachers);
     }
 
-    public Teacher getByUsername(String name){
-        return teacherRepository.findByUserNameAndStateIs(name, TeacherState.ACTIVE.getValue());
+    public TeacherResponse getByUsername(String name) throws NotFoundException {
+        Teacher teacher = teacherRepository.findByUserNameAndStateIs(name, TeacherState.ACTIVE.getValue());
+        if(Objects.isNull(teacher)){
+            throw new NotFoundException("exception.notfound");
+        }
+        return teacherMapper.entityToResponse(teacher);
     }
 
-    public Teacher getById(Long id){
-        return teacherRepository.findById(id).get();
+    public TeacherResponse getById(Long id) throws NotFoundException {
+        Optional<Teacher> teacherOptional = teacherRepository.findById(id);
+        if(!teacherOptional.isPresent()){
+            throw new NotFoundException("exception.notfound");
+        }
+        return teacherMapper.entityToResponse(teacherOptional.get());
     }
 
 }

@@ -7,6 +7,7 @@ import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.RoomMapper;
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
 import java.util.List;
@@ -26,36 +27,38 @@ public class RoomService {
         this.roomMapper = roomMapper;
     }
 
-    public Room insert(CreateRoomRequest createRoomRequest){
+    public RoomResponse insert(CreateRoomRequest createRoomRequest){
         Room room = roomMapper.createRequestToEntity(createRoomRequest);
         room.setState(RoomState.OPEN.getValue());
-        return roomRepository.save(room);
+        roomRepository.save(room);
+        return roomMapper.entityToResponse(room);
     }
 
-    public Room update(UpdateRoomRequest updateRoomRequest) throws NotFoundException {
+    public RoomResponse update(UpdateRoomRequest updateRoomRequest) throws NotFoundException {
         Room room = roomRepository.findById(updateRoomRequest.getId()).get();
-        Room roomUpdate = roomMapper.updateRequestToEntity(updateRoomRequest);
         if(Objects.isNull(room)){
             throw new NotFoundException("exception.notfound");
         }
+        Room roomUpdate = roomMapper.updateRequestToEntity(updateRoomRequest);
         roomUpdate.setState(room.getState());
-        return roomRepository.save(roomUpdate);
+        roomRepository.save(roomUpdate);
+        return roomMapper.entityToResponse(roomUpdate);
     }
 
-    public Room getById(Long id) throws NotFoundException {
+    public RoomResponse getById(Long id) throws NotFoundException {
         Room room = roomRepository.findById(id).get();
         if(Objects.isNull(room)){
             throw new NotFoundException("exception.notfound");
         }
-        return room;
+        return roomMapper.entityToResponse(room);
     }
 
-    public List<Room> getRoomByTeacher(Long id) throws NotFoundException {
+    public List<RoomResponse> getRoomByTeacher(Long id) throws NotFoundException {
         Specification<Room> specification = hasRoomWithTeacherId(id);
         List<Room> rooms =  roomRepository.findAll(specification);
         if(CollectionUtils.isEmpty(rooms)){
             throw new NotFoundException("exception.list.null");
         }
-        return rooms;
+        return roomMapper.listEntityToResponse(rooms);
     }
 }

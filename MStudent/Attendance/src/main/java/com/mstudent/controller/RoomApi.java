@@ -3,6 +3,7 @@ package com.mstudent.controller;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.service.RoomService;
 import java.util.List;
@@ -20,19 +21,19 @@ public class RoomApi {
   }
 
   @GetMapping("/teacher/{id}")
-  public List<Room> getAllRoomByTeacher(@PathVariable Long id) throws NotFoundException {
+  public List<RoomResponse> getAllRoomByTeacher(@PathVariable Long id) throws NotFoundException {
       return roomService.getRoomByTeacher(id);
   }
   @PostMapping
-  public ResponseEntity<Room> insert(@RequestBody CreateRoomRequest createRoomRequest){
+  public ResponseEntity<RoomResponse> insert(@RequestBody CreateRoomRequest createRoomRequest){
     return ResponseEntity.ok(roomService.insert(createRoomRequest));
   }
   @PutMapping
-  public ResponseEntity<Room> update(@RequestBody UpdateRoomRequest updateRoomRequest) throws NotFoundException {
+  public ResponseEntity<RoomResponse> update(@RequestBody UpdateRoomRequest updateRoomRequest) throws NotFoundException {
     return ResponseEntity.ok(roomService.update(updateRoomRequest));
   }
   @GetMapping("/{id}")
-  public ResponseEntity<Room> getOne(@PathVariable Long id) throws NotFoundException {
+  public ResponseEntity<RoomResponse> getOne(@PathVariable Long id) throws NotFoundException {
     return ResponseEntity.ok(roomService.getById(id));
   }
 }

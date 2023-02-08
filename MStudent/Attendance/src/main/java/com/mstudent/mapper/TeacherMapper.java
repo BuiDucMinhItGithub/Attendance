@@ -2,7 +2,9 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
 import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
+import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.model.entity.Teacher;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,4 +15,8 @@ public interface TeacherMapper {
     Teacher createRequestToEntity(CreateTeacherRequest createTeacherRequest);
 
     Teacher updateRequestToEntity(UpdateTeacherRequest updateTeacherRequest);
+
+    TeacherResponse entityToResponse(Teacher teacher);
+
+    List<TeacherResponse> listEntityToResponse(List<Teacher> teachers);
 }

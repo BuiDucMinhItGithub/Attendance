@@ -1,7 +1,9 @@
 package com.mstudent.controller;
 
+import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
+import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.entity.Student;
 import com.mstudent.service.StudentService;
 import java.util.List;
@@ -20,20 +22,22 @@ public class StudentApi {
   }
 
   @PostMapping
-  public ResponseEntity<Student> insert(@RequestBody CreateStudentRequest createStudentRequest){
+  public ResponseEntity<StudentResponse> insert(@RequestBody CreateStudentRequest createStudentRequest){
     return ResponseEntity.ok(studentService.insert(createStudentRequest));
   }
   @PutMapping
-  public ResponseEntity<Student> update(@RequestBody UpdateStudentRequest updateStudentRequest){
+  public ResponseEntity<StudentResponse> update(@RequestBody UpdateStudentRequest updateStudentRequest)
+      throws NotFoundException {
     return ResponseEntity.ok(studentService.update(updateStudentRequest));
   }
   @GetMapping("/{id}")
-  public ResponseEntity<Student> getOne(@PathVariable Long id){
+  public ResponseEntity<StudentResponse> getOne(@PathVariable Long id) throws NotFoundException {
     return ResponseEntity.ok(studentService.getById(id));
   }
 
   @GetMapping("/student-room/{roomId}")
-  public ResponseEntity<List<Student>> getListByRoom(@PathVariable Long roomId){
+  public ResponseEntity<List<StudentResponse>> getListByRoom(@PathVariable Long roomId)
+      throws NotFoundException {
     return ResponseEntity.ok(studentService.getListByRoomId(roomId));
   }
 }

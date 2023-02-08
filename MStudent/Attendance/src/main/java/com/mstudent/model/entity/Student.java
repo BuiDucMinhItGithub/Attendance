@@ -28,12 +28,10 @@ public class Student {
     private Date birthday;
 
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Room> rooms;
 
     private String state;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Cost> costs;
 }

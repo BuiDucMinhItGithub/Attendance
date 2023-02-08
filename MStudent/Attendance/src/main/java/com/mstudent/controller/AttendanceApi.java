@@ -6,6 +6,7 @@ import com.mstudent.model.dto.request.Attendance.AttendanceToProcessCostRequest;
 import com.mstudent.model.dto.request.Attendance.AttendanceTodayRequest;
 import com.mstudent.model.dto.request.Attendance.CreateAttendanceRequest;
 import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
+import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
 import com.mstudent.model.entity.Attendance;
 import com.mstudent.service.AttendanceService;
 import java.util.List;
@@ -27,7 +28,8 @@ public class AttendanceApi {
   }
 
   @PutMapping
-  public List<Attendance> update(@RequestBody UpdateAttendanceRequest updateAttendanceRequest){
+  public List<AttendanceResponse> update(@RequestBody UpdateAttendanceRequest updateAttendanceRequest)
+      throws NotFoundException {
     return attendanceService.update(updateAttendanceRequest);
   }
 

@@ -3,9 +3,11 @@ package com.mstudent.service;
 import com.mstudent.enums.AttendanceState;
 import com.mstudent.enums.CostState;
 import com.mstudent.exception.NotFoundException;
+import com.mstudent.mapper.AttendanceMapper;
 import com.mstudent.model.dto.request.Attendance.CreateAttendanceRequest;
 import com.mstudent.model.dto.request.Attendance.StudentAttendance;
 import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
+import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
 import com.mstudent.model.entity.Attendance;
 import com.mstudent.model.entity.Cost;
 import com.mstudent.model.entity.Room;
@@ -36,13 +38,15 @@ public class AttendanceService {
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
     private final CostRepository costRepository;
+    private final AttendanceMapper attendanceMapper;
 
     public AttendanceService(AttendanceRepository attendanceRepository, StudentRepository studentRepository, RoomRepository roomRepository,
-        CostRepository costRepository) {
+        CostRepository costRepository, AttendanceMapper attendanceMapper) {
         this.attendanceRepository = attendanceRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
         this.costRepository = costRepository;
+        this.attendanceMapper = attendanceMapper;
     }
 
     public List<Attendance> insert(CreateAttendanceRequest createAttendanceRequest){
@@ -77,10 +81,15 @@ public class AttendanceService {
         return attendances;
     }
 
-    public List<Attendance> update(UpdateAttendanceRequest updateAttendanceRequest){
+    public List<AttendanceResponse> update(UpdateAttendanceRequest updateAttendanceRequest)
+        throws NotFoundException {
         log.info("Start update attendance at date = %s",updateAttendanceRequest.getDate());
         List<Attendance> attendances = processUpdateRequest(updateAttendanceRequest);
-        return attendanceRepository.saveAll(attendances);
+        if(CollectionUtils.isEmpty(attendances)){
+            throw new NotFoundException("exception.list.null");
+        }
+        attendanceRepository.saveAll(attendances);
+        return attendanceMapper.listEntityToResponse(attendances);
     }
 
     public List<Attendance> getListFilterByDate(Date fromDate, Date toDate, Long roomId)
