@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-08T15:23:26+0700",
+    date = "2023-02-09T09:32:35+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -34,14 +34,14 @@ public class AttendanceMapperImpl implements AttendanceMapper {
     }
 
     @Override
-    public List<Attendance> listEntityToResponse(List<Attendance> attendances) {
+    public List<AttendanceResponse> listEntityToResponse(List<Attendance> attendances) {
         if ( attendances == null ) {
             return null;
         }
 
-        List<Attendance> list = new ArrayList<Attendance>( attendances.size() );
+        List<AttendanceResponse> list = new ArrayList<AttendanceResponse>( attendances.size() );
         for ( Attendance attendance : attendances ) {
-            list.add( attendance );
+            list.add( entityToResponse( attendance ) );
         }
 
         return list;

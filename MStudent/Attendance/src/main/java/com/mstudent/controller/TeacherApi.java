@@ -44,24 +44,24 @@ public class TeacherApi {
         return teacherService.getList();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest user) throws NotFoundException {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtService.generateTokenLogin(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        TeacherResponse currentUser = teacherService.getByUsername(user.getUsername());
-        RefreshToken refreshToken = jwtService.createRefreshToken(currentUser.getId());
-        return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(),
-            currentUser.getFullName(), userDetails.getAuthorities(), refreshToken.getToken()));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<TeacherResponse> register(@RequestBody CreateTeacherRequest createTeacherRequest){
-        TeacherResponse teacherResponse = teacherService.insert(createTeacherRequest);
-        return ResponseEntity.ok(teacherResponse);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest user) throws NotFoundException {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        String jwt = jwtService.generateTokenLogin(authentication);
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        TeacherResponse currentUser = teacherService.getByUsername(user.getUsername());
+//        RefreshToken refreshToken = jwtService.createRefreshToken(currentUser.getId());
+//        return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(),
+//            currentUser.getFullName(), userDetails.getAuthorities(), refreshToken.getToken()));
+//    }
+//
+//    @PostMapping("/register")
+//    public ResponseEntity<TeacherResponse> register(@RequestBody CreateTeacherRequest createTeacherRequest){
+//        TeacherResponse teacherResponse = teacherService.insert(createTeacherRequest);
+//        return ResponseEntity.ok(teacherResponse);
+//    }
 
     @PutMapping
     public ResponseEntity<TeacherResponse> update(@RequestBody UpdateTeacherRequest updateTeacherRequest)
