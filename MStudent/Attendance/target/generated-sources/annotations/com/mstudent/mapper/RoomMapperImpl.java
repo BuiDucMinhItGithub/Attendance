@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-09T17:09:15+0700",
+    date = "2023-02-09T17:40:01+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -30,9 +30,6 @@ public class RoomMapperImpl implements RoomMapper {
         if ( createRoomRequest != null ) {
             if ( createRoomRequest.getName() != null ) {
                 room.setName( createRoomRequest.getName() );
-            }
-            if ( createRoomRequest.getStartDate() != null ) {
-                room.setStartDate( createRoomRequest.getStartDate() );
             }
             if ( createRoomRequest.getTeacher() != null ) {
                 room.setTeacher( createRoomRequest.getTeacher() );

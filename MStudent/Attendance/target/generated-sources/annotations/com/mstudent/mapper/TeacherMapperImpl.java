@@ -2,6 +2,7 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
 import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
+import com.mstudent.model.dto.response.Teacher.TeacherRegisterResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.model.entity.Teacher;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-09T17:09:16+0700",
+    date = "2023-02-09T17:40:01+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -74,6 +75,27 @@ public class TeacherMapperImpl implements TeacherMapper {
         teacherResponse.setRole( teacher.getRole() );
 
         return teacherResponse;
+    }
+
+    @Override
+    public TeacherRegisterResponse entityToRegisterResponse(Teacher teacher) {
+        if ( teacher == null ) {
+            return null;
+        }
+
+        TeacherRegisterResponse teacherRegisterResponse = new TeacherRegisterResponse();
+
+        teacherRegisterResponse.setId( teacher.getId() );
+        teacherRegisterResponse.setFullName( teacher.getFullName() );
+        teacherRegisterResponse.setUserName( teacher.getUserName() );
+        teacherRegisterResponse.setBirthday( teacher.getBirthday() );
+        teacherRegisterResponse.setPassword( teacher.getPassword() );
+        teacherRegisterResponse.setPhone( teacher.getPhone() );
+        teacherRegisterResponse.setAddress( teacher.getAddress() );
+        teacherRegisterResponse.setState( teacher.getState() );
+        teacherRegisterResponse.setRole( teacher.getRole() );
+
+        return teacherRegisterResponse;
     }
 
     @Override

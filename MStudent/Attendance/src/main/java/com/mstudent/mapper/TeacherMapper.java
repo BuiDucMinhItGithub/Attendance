@@ -2,6 +2,7 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
 import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
+import com.mstudent.model.dto.response.Teacher.TeacherRegisterResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.model.entity.Teacher;
 import java.text.SimpleDateFormat;
@@ -20,6 +21,8 @@ public interface TeacherMapper {
     Teacher updateRequestToEntity(UpdateTeacherRequest updateTeacherRequest);
 
     TeacherResponse entityToResponse(Teacher teacher);
+
+    TeacherRegisterResponse entityToRegisterResponse(Teacher teacher);
 
     List<TeacherResponse> listEntityToResponse(List<Teacher> teachers);
 }

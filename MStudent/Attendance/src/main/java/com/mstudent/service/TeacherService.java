@@ -6,6 +6,7 @@ import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.TeacherMapper;
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
 import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
+import com.mstudent.model.dto.response.Teacher.TeacherRegisterResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.model.entity.Teacher;
 import com.mstudent.repository.TeacherRepository;
@@ -30,14 +31,14 @@ public class TeacherService {
         this.teacherMapper = teacherMapper;
     }
 
-    public TeacherResponse insert(CreateTeacherRequest createTeacherRequest){
+    public TeacherRegisterResponse insert(CreateTeacherRequest createTeacherRequest){
         Teacher teacher = teacherMapper.createRequestToEntity(createTeacherRequest);
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacher.setRooms(null);
         teacher.setRole(RoleType.TEACHER.getValue());
         teacher.setState(TeacherState.ACTIVE.getValue());
         teacherRepository.save(teacher);
-        return teacherMapper.entityToResponse(teacher);
+        return teacherMapper.entityToRegisterResponse(teacher);
     }
 
     public TeacherResponse update(UpdateTeacherRequest updateTeacherRequest)

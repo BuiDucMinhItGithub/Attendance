@@ -59,6 +59,7 @@ com\mstudent\model\entity\Room.class
 com\mstudent\controller\CostApi.class
 com\mstudent\model\entity\Cost.class
 com\mstudent\model\dto\response\Student\StudentResponse.class
+com\mstudent\model\dto\response\Teacher\TeacherRegisterResponse.class
 com\mstudent\controller\AuthApi.class
 com\mstudent\exception\NotFoundException.class
 com\mstudent\repository\StudentRepository.class

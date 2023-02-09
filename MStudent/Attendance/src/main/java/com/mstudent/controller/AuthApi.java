@@ -6,6 +6,7 @@ import com.mstudent.model.base.JwtResponse;
 import com.mstudent.model.base.LoginRequest;
 import com.mstudent.model.base.RefreshToken;
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
+import com.mstudent.model.dto.response.Teacher.TeacherRegisterResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +49,9 @@ public class AuthApi {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<TeacherResponse> register(@RequestBody CreateTeacherRequest createTeacherRequest){
-    TeacherResponse teacherResponse = teacherService.insert(createTeacherRequest);
-    return ResponseEntity.ok(teacherResponse);
+  public ResponseEntity<TeacherRegisterResponse> register(@RequestBody CreateTeacherRequest createTeacherRequest){
+    TeacherRegisterResponse teacherRegisterResponse = teacherService.insert(createTeacherRequest);
+    return ResponseEntity.ok(teacherRegisterResponse);
   }
 
 }
