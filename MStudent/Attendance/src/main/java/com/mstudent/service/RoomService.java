@@ -10,6 +10,8 @@ import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
 import com.mstudent.model.dto.response.Room.RoomResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
+import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,6 +32,7 @@ public class RoomService {
     public RoomResponse insert(CreateRoomRequest createRoomRequest){
         Room room = roomMapper.createRequestToEntity(createRoomRequest);
         room.setState(RoomState.OPEN.getValue());
+        room.setStartDate(Date.from(OffsetDateTime.now().toInstant()));
         roomRepository.save(room);
         return roomMapper.entityToResponse(room);
     }

@@ -18,10 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateRoomRequest {
     private String name;
-    @JsonFormat(pattern="dd-MM-yyyy")
-    private Date startDate;
     private Teacher teacher;
     private int numberOfStudent;
     private BigDecimal pricePerLesson;
-    private List<Student> students;
 }

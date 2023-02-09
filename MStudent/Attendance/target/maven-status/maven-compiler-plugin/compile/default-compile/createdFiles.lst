@@ -40,6 +40,7 @@ com\mstudent\repository\RoomRepository.class
 com\mstudent\controller\TeacherApi.class
 com\mstudent\mapper\CostMapperImpl.class
 com\mstudent\mapper\RoomMapperImpl.class
+com\mstudent\model\dto\request\Student\UpdateStudentInRoomRequest.class
 com\mstudent\model\dto\response\Attendance\AttendanceResponse.class
 com\mstudent\model\entity\Attendance.class
 com\mstudent\specification\TeacherSpecification.class

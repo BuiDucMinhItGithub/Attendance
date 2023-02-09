@@ -11,6 +11,7 @@ C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstuden
 C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\service\UserService.java
 C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\mapper\AttendanceMapper.java
 C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\mapper\CostMapper.java
+C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\model\dto\request\Student\UpdateStudentInRoomRequest.java
 C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\model\entity\Attendance.java
 C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\service\RoomService.java
 C:\Users\bdminh\Desktop\Attendance\MStudent\Attendance\src\main\java\com\mstudent\model\dto\request\Attendance\CreateAttendanceRequest.java

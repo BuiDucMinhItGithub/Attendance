@@ -1,6 +1,7 @@
 package com.mstudent.model.dto.request.Room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.entity.Student;
 import com.mstudent.model.entity.Teacher;
 import java.math.BigDecimal;
@@ -21,5 +22,5 @@ public class UpdateRoomRequest {
     private int numberOfStudent;
     private BigDecimal pricePerLesson;
     private String state;
-    private List<Student> students;
+    private List<UpdateStudentInRoomRequest> students;
 }

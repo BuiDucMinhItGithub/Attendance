@@ -1,6 +1,7 @@
 package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
+import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
 import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.entity.Student;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-09T09:32:35+0700",
+    date = "2023-02-09T17:09:16+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -19,46 +20,63 @@ public class StudentMapperImpl implements StudentMapper {
 
     @Override
     public Student createRequestToEntity(CreateStudentRequest createStudentRequest) {
-        if ( createStudentRequest == null ) {
-            return null;
-        }
 
         Student student = new Student();
 
-        student.setFullName( createStudentRequest.getFullName() );
-        student.setBirthday( createStudentRequest.getBirthday() );
+        if ( createStudentRequest != null ) {
+            if ( createStudentRequest.getFullName() != null ) {
+                student.setFullName( createStudentRequest.getFullName() );
+            }
+            if ( createStudentRequest.getBirthday() != null ) {
+                student.setBirthday( createStudentRequest.getBirthday() );
+            }
+        }
 
         return student;
     }
 
     @Override
     public Student updateRequestToEntity(UpdateStudentRequest updateStudentRequest) {
-        if ( updateStudentRequest == null ) {
-            return null;
-        }
 
         Student student = new Student();
 
-        student.setId( updateStudentRequest.getId() );
-        student.setFullName( updateStudentRequest.getFullName() );
-        student.setBirthday( updateStudentRequest.getBirthday() );
-        student.setState( updateStudentRequest.getState() );
+        if ( updateStudentRequest != null ) {
+            if ( updateStudentRequest.getId() != null ) {
+                student.setId( updateStudentRequest.getId() );
+            }
+            if ( updateStudentRequest.getFullName() != null ) {
+                student.setFullName( updateStudentRequest.getFullName() );
+            }
+            if ( updateStudentRequest.getBirthday() != null ) {
+                student.setBirthday( updateStudentRequest.getBirthday() );
+            }
+            if ( updateStudentRequest.getState() != null ) {
+                student.setState( updateStudentRequest.getState() );
+            }
+        }
 
         return student;
     }
 
     @Override
     public StudentResponse entityToResponse(Student student) {
-        if ( student == null ) {
-            return null;
-        }
 
         StudentResponse studentResponse = new StudentResponse();
 
-        studentResponse.setId( student.getId() );
-        studentResponse.setFullName( student.getFullName() );
-        studentResponse.setBirthday( student.getBirthday() );
-        studentResponse.setState( student.getState() );
+        if ( student != null ) {
+            if ( student.getId() != null ) {
+                studentResponse.setId( student.getId() );
+            }
+            if ( student.getFullName() != null ) {
+                studentResponse.setFullName( student.getFullName() );
+            }
+            if ( student.getBirthday() != null ) {
+                studentResponse.setBirthday( student.getBirthday() );
+            }
+            if ( student.getState() != null ) {
+                studentResponse.setState( student.getState() );
+            }
+        }
 
         return studentResponse;
     }
@@ -66,12 +84,43 @@ public class StudentMapperImpl implements StudentMapper {
     @Override
     public List<StudentResponse> listEntityToResponse(List<Student> students) {
         if ( students == null ) {
-            return null;
+            return new ArrayList<StudentResponse>();
         }
 
         List<StudentResponse> list = new ArrayList<StudentResponse>( students.size() );
         for ( Student student : students ) {
             list.add( entityToResponse( student ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public Student updateInRoomToEntity(UpdateStudentInRoomRequest updateStudentInRoomRequests) {
+
+        Student student = new Student();
+
+        if ( updateStudentInRoomRequests != null ) {
+            if ( updateStudentInRoomRequests.getId() != null ) {
+                student.setId( updateStudentInRoomRequests.getId() );
+            }
+            if ( updateStudentInRoomRequests.getFullName() != null ) {
+                student.setFullName( updateStudentInRoomRequests.getFullName() );
+            }
+        }
+
+        return student;
+    }
+
+    @Override
+    public List<Student> listUpdateInRoomToEntity(List<UpdateStudentInRoomRequest> updateStudentInRoomRequests) {
+        if ( updateStudentInRoomRequests == null ) {
+            return new ArrayList<Student>();
+        }
+
+        List<Student> list = new ArrayList<Student>( updateStudentInRoomRequests.size() );
+        for ( UpdateStudentInRoomRequest updateStudentInRoomRequest : updateStudentInRoomRequests ) {
+            list.add( updateInRoomToEntity( updateStudentInRoomRequest ) );
         }
 
         return list;
