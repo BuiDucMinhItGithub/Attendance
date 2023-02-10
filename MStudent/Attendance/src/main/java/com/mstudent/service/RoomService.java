@@ -7,7 +7,9 @@ import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.RoomMapper;
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomCreateResponse;
 import com.mstudent.model.dto.response.Room.RoomResponse;
+import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
 import java.time.OffsetDateTime;
@@ -29,15 +31,15 @@ public class RoomService {
         this.roomMapper = roomMapper;
     }
 
-    public RoomResponse insert(CreateRoomRequest createRoomRequest){
+    public RoomCreateResponse insert(CreateRoomRequest createRoomRequest){
         Room room = roomMapper.createRequestToEntity(createRoomRequest);
         room.setState(RoomState.OPEN.getValue());
         room.setStartDate(Date.from(OffsetDateTime.now().toInstant()));
         roomRepository.save(room);
-        return roomMapper.entityToResponse(room);
+        return roomMapper.entityToCreateResponse(room);
     }
 
-    public RoomResponse update(UpdateRoomRequest updateRoomRequest) throws NotFoundException {
+    public RoomUpdateResponse update(UpdateRoomRequest updateRoomRequest) throws NotFoundException {
         Room room = roomRepository.findById(updateRoomRequest.getId()).get();
         if(Objects.isNull(room)){
             throw new NotFoundException("exception.notfound");
@@ -45,7 +47,7 @@ public class RoomService {
         Room roomUpdate = roomMapper.updateRequestToEntity(updateRoomRequest);
         roomUpdate.setState(room.getState());
         roomRepository.save(roomUpdate);
-        return roomMapper.entityToResponse(roomUpdate);
+        return roomMapper.entityToUpdateResponse(roomUpdate);
     }
 
     public RoomResponse getById(Long id) throws NotFoundException {

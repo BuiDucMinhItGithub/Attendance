@@ -1,8 +1,7 @@
 package com.mstudent.model.dto.response.Room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mstudent.model.dto.response.Cost.CostResponse;
-import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,15 +15,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomResponse {
+public class RoomUpdateResponse {
   private Long id;
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date startDate;
-  @JsonFormat(pattern="dd-MM-yyyy")
-  private Date endDate;
   private TeacherResponse teacherResponse;
   private int numberOfStudent;
   private String state;
   private BigDecimal pricePerLesson;
-  private List<StudentResponse> studentResponses;
+  private List<StudentInRoomResponse> students;
 }

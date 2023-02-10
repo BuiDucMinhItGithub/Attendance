@@ -3,6 +3,7 @@ package com.mstudent.mapper;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
+import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
 import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.entity.Student;
 import java.util.List;
@@ -34,5 +35,10 @@ public interface StudentMapper {
     Student updateInRoomToEntity(UpdateStudentInRoomRequest updateStudentInRoomRequests);
     @Named("listUpdateInRoomToEntity")
     List<Student> listUpdateInRoomToEntity(List<UpdateStudentInRoomRequest> updateStudentInRoomRequests);
+
+    StudentInRoomResponse entityToInRoomResponse(Student student);
+
+    @Named("listEntityToInRoomResponse")
+    List<StudentInRoomResponse> listEntityToInRoomResponse(List<Student> students);
 
 }

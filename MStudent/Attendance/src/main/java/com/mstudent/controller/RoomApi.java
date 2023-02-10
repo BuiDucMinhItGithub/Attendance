@@ -3,7 +3,9 @@ package com.mstudent.controller;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomCreateResponse;
 import com.mstudent.model.dto.response.Room.RoomResponse;
+import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.service.RoomService;
 import java.util.List;
@@ -25,11 +27,11 @@ public class RoomApi {
       return roomService.getRoomByTeacher(id);
   }
   @PostMapping
-  public ResponseEntity<RoomResponse> insert(@RequestBody CreateRoomRequest createRoomRequest){
+  public ResponseEntity<RoomCreateResponse> insert(@RequestBody CreateRoomRequest createRoomRequest){
     return ResponseEntity.ok(roomService.insert(createRoomRequest));
   }
   @PutMapping
-  public ResponseEntity<RoomResponse> update(@RequestBody UpdateRoomRequest updateRoomRequest) throws NotFoundException {
+  public ResponseEntity<RoomUpdateResponse> update(@RequestBody UpdateRoomRequest updateRoomRequest) throws NotFoundException {
     return ResponseEntity.ok(roomService.update(updateRoomRequest));
   }
   @GetMapping("/{id}")

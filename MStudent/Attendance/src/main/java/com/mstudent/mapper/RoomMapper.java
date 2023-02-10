@@ -2,7 +2,9 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomCreateResponse;
 import com.mstudent.model.dto.response.Room.RoomResponse;
+import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.entity.Room;
 import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
@@ -28,6 +30,11 @@ public interface RoomMapper {
     Room updateRequestToEntity(UpdateRoomRequest updateRoomRequest);
 
     RoomResponse entityToResponse(Room room);
+
+    RoomCreateResponse entityToCreateResponse(Room room);
+
+    @Mapping(target = "students", qualifiedByName = "listEntityToInRoomResponse")
+    RoomUpdateResponse entityToUpdateResponse(Room room);
 
     List<RoomResponse> listEntityToResponse(List<Room> rooms);
 }

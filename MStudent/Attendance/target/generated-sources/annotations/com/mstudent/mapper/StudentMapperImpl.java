@@ -3,6 +3,7 @@ package com.mstudent.mapper;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
+import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
 import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.entity.Student;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-09T17:40:01+0700",
+    date = "2023-02-10T10:16:30+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -121,6 +122,37 @@ public class StudentMapperImpl implements StudentMapper {
         List<Student> list = new ArrayList<Student>( updateStudentInRoomRequests.size() );
         for ( UpdateStudentInRoomRequest updateStudentInRoomRequest : updateStudentInRoomRequests ) {
             list.add( updateInRoomToEntity( updateStudentInRoomRequest ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public StudentInRoomResponse entityToInRoomResponse(Student student) {
+
+        StudentInRoomResponse studentInRoomResponse = new StudentInRoomResponse();
+
+        if ( student != null ) {
+            if ( student.getId() != null ) {
+                studentInRoomResponse.setId( student.getId() );
+            }
+            if ( student.getFullName() != null ) {
+                studentInRoomResponse.setFullName( student.getFullName() );
+            }
+        }
+
+        return studentInRoomResponse;
+    }
+
+    @Override
+    public List<StudentInRoomResponse> listEntityToInRoomResponse(List<Student> students) {
+        if ( students == null ) {
+            return new ArrayList<StudentInRoomResponse>();
+        }
+
+        List<StudentInRoomResponse> list = new ArrayList<StudentInRoomResponse>( students.size() );
+        for ( Student student : students ) {
+            list.add( entityToInRoomResponse( student ) );
         }
 
         return list;
