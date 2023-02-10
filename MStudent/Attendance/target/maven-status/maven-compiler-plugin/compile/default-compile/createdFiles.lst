@@ -43,6 +43,7 @@ com\mstudent\mapper\RoomMapperImpl.class
 com\mstudent\model\dto\request\Student\UpdateStudentInRoomRequest.class
 com\mstudent\model\dto\response\Attendance\AttendanceResponse.class
 com\mstudent\model\entity\Attendance.class
+com\mstudent\model\dto\response\Room\RoomCreateResponse.class
 com\mstudent\specification\TeacherSpecification.class
 com\mstudent\enums\AttendanceState.class
 com\mstudent\repository\AttendanceRepository.class
@@ -59,6 +60,7 @@ com\mstudent\model\entity\Room.class
 com\mstudent\controller\CostApi.class
 com\mstudent\model\entity\Cost.class
 com\mstudent\model\dto\response\Student\StudentResponse.class
+com\mstudent\model\dto\response\Room\RoomUpdateResponse.class
 com\mstudent\model\dto\response\Teacher\TeacherRegisterResponse.class
 com\mstudent\controller\AuthApi.class
 com\mstudent\exception\NotFoundException.class
@@ -67,10 +69,13 @@ com\mstudent\enums\RoleType.class
 com\mstudent\exception\TokenRefreshException.class
 com\mstudent\model\dto\request\Student\CreateStudentRequest.class
 com\mstudent\model\base\JwtResponse.class
+com\mstudent\model\dto\response\Student\StudentFullResponse.class
 com\mstudent\specification\StudentSpecification.class
 com\mstudent\repository\TeacherRepository.class
 com\mstudent\service\StudentService.class
 com\mstudent\model\dto\request\Attendance\AttendanceTodayRequest.class
+com\mstudent\model\dto\response\Student\StudentInRoomResponse.class
 com\mstudent\Main.class
 com\mstudent\model\base\RefreshToken.class
 com\mstudent\mapper\TeacherMapper.class
+com\mstudent\model\dto\request\Teacher\TeacherCreateRoom.class

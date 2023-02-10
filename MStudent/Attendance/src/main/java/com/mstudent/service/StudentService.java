@@ -6,6 +6,7 @@ import com.mstudent.mapper.StudentMapper;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
 import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentFullResponse;
 import com.mstudent.model.entity.Student;
 import com.mstudent.repository.StudentRepository;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class StudentService {
         Student student = studentMapper.createRequestToEntity(createStudentRequest);
         student.setState(StudentState.ACTIVE.getValue());
         studentRepository.save(student);
-        return studentMapper.entityToResponse(student);
+        return studentMapper.entityToResponseUpdateAndInsert(student);
     }
 
     public StudentResponse update(UpdateStudentRequest updateStudentRequest) throws NotFoundException {
@@ -46,10 +47,10 @@ public class StudentService {
             studentUpdate.setState(student.getState());
         }
         studentRepository.save(studentUpdate);
-        return studentMapper.entityToResponse(studentUpdate);
+        return studentMapper.entityToResponseUpdateAndInsert(studentUpdate);
     }
 
-    public StudentResponse getById(Long id) throws NotFoundException {
+    public StudentFullResponse getById(Long id) throws NotFoundException {
         Student student = studentRepository.findById(id).get();
         if(Objects.isNull(student)){
             throw new NotFoundException("exception.notfound");
@@ -57,7 +58,7 @@ public class StudentService {
         return studentMapper.entityToResponse(student);
     }
 
-    public List<StudentResponse> getListByRoomId(Long id) throws NotFoundException {
+    public List<StudentFullResponse> getListByRoomId(Long id) throws NotFoundException {
         Specification<Student> specification = hasRoomWithId(id);
         List<Student> students = studentRepository.findAll(specification);;
         if(CollectionUtils.isEmpty(students)){

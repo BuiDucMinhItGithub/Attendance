@@ -3,6 +3,7 @@ package com.mstudent.mapper;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
+import com.mstudent.model.dto.response.Student.StudentFullResponse;
 import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
 import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.entity.Student;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-10T10:16:30+0700",
+    date = "2023-02-10T15:41:03+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -60,35 +61,35 @@ public class StudentMapperImpl implements StudentMapper {
     }
 
     @Override
-    public StudentResponse entityToResponse(Student student) {
+    public StudentFullResponse entityToResponse(Student student) {
 
-        StudentResponse studentResponse = new StudentResponse();
+        StudentFullResponse studentFullResponse = new StudentFullResponse();
 
         if ( student != null ) {
             if ( student.getId() != null ) {
-                studentResponse.setId( student.getId() );
+                studentFullResponse.setId( student.getId() );
             }
             if ( student.getFullName() != null ) {
-                studentResponse.setFullName( student.getFullName() );
+                studentFullResponse.setFullName( student.getFullName() );
             }
             if ( student.getBirthday() != null ) {
-                studentResponse.setBirthday( student.getBirthday() );
+                studentFullResponse.setBirthday( student.getBirthday() );
             }
             if ( student.getState() != null ) {
-                studentResponse.setState( student.getState() );
+                studentFullResponse.setState( student.getState() );
             }
         }
 
-        return studentResponse;
+        return studentFullResponse;
     }
 
     @Override
-    public List<StudentResponse> listEntityToResponse(List<Student> students) {
+    public List<StudentFullResponse> listEntityToResponse(List<Student> students) {
         if ( students == null ) {
-            return new ArrayList<StudentResponse>();
+            return new ArrayList<StudentFullResponse>();
         }
 
-        List<StudentResponse> list = new ArrayList<StudentResponse>( students.size() );
+        List<StudentFullResponse> list = new ArrayList<StudentFullResponse>( students.size() );
         for ( Student student : students ) {
             list.add( entityToResponse( student ) );
         }
@@ -156,5 +157,28 @@ public class StudentMapperImpl implements StudentMapper {
         }
 
         return list;
+    }
+
+    @Override
+    public StudentResponse entityToResponseUpdateAndInsert(Student student) {
+
+        StudentResponse studentResponse = new StudentResponse();
+
+        if ( student != null ) {
+            if ( student.getId() != null ) {
+                studentResponse.setId( student.getId() );
+            }
+            if ( student.getFullName() != null ) {
+                studentResponse.setFullName( student.getFullName() );
+            }
+            if ( student.getBirthday() != null ) {
+                studentResponse.setBirthday( student.getBirthday() );
+            }
+            if ( student.getState() != null ) {
+                studentResponse.setState( student.getState() );
+            }
+        }
+
+        return studentResponse;
     }
 }

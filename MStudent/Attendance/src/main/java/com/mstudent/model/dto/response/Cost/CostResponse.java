@@ -1,7 +1,7 @@
 package com.mstudent.model.dto.response.Cost;
 
 import com.mstudent.model.dto.response.Room.RoomResponse;
-import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentFullResponse;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +18,6 @@ public class CostResponse {
   private int month;
   private String state;
   private BigDecimal price;
-  private StudentResponse studentResponse;
+  private StudentFullResponse studentFullResponse;
   private RoomResponse roomResponse;
 }

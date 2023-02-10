@@ -1,8 +1,7 @@
 package com.mstudent.model.dto.response.Room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mstudent.model.dto.response.Cost.CostResponse;
-import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentFullResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -26,5 +25,5 @@ public class RoomResponse {
   private int numberOfStudent;
   private String state;
   private BigDecimal pricePerLesson;
-  private List<StudentResponse> studentResponses;
+  private List<StudentFullResponse> studentFullRespons;
 }

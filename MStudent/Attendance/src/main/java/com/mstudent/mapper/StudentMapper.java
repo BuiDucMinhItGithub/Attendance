@@ -3,11 +3,11 @@ package com.mstudent.mapper;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
-import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
 import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
+import com.mstudent.model.dto.response.Student.StudentFullResponse;
 import com.mstudent.model.entity.Student;
 import java.util.List;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
@@ -28,9 +28,9 @@ public interface StudentMapper {
 
     Student updateRequestToEntity(UpdateStudentRequest updateStudentRequest);
 
-    StudentResponse entityToResponse(Student student);
+    StudentFullResponse entityToResponse(Student student);
 
-    List<StudentResponse> listEntityToResponse(List<Student> students);
+    List<StudentFullResponse> listEntityToResponse(List<Student> students);
 
     Student updateInRoomToEntity(UpdateStudentInRoomRequest updateStudentInRoomRequests);
     @Named("listUpdateInRoomToEntity")
@@ -40,5 +40,7 @@ public interface StudentMapper {
 
     @Named("listEntityToInRoomResponse")
     List<StudentInRoomResponse> listEntityToInRoomResponse(List<Student> students);
+
+    StudentResponse entityToResponseUpdateAndInsert(Student student);
 
 }
