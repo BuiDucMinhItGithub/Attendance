@@ -25,5 +25,5 @@ public class RoomResponse {
   private int numberOfStudent;
   private String state;
   private BigDecimal pricePerLesson;
-  private List<StudentFullResponse> studentFullRespons;
+  private List<StudentFullResponse> studentFullResponses;
 }
