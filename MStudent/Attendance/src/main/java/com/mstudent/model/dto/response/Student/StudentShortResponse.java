@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentInRoomResponse {
+public class StudentShortResponse {
   private Long id;
   private String fullName;
 

@@ -49,9 +49,10 @@ public class AttendanceService {
         this.attendanceMapper = attendanceMapper;
     }
 
-    public List<Attendance> insert(CreateAttendanceRequest createAttendanceRequest){
+    public List<AttendanceResponse> insert(CreateAttendanceRequest createAttendanceRequest){
         List<Attendance> attendances = mapRequestToEntity(createAttendanceRequest);
-        return attendanceRepository.saveAll(attendances);
+        attendanceRepository.saveAll(attendances);
+        return attendanceMapper.listEntityToResponse(attendances);
     }
 
     public Attendance getById(Long id) throws NotFoundException {
@@ -63,22 +64,22 @@ public class AttendanceService {
         return attendanceOptional.get();
     }
 
-    public List<Attendance> getListByRoomAndDate(Long roomId, Date date) throws NotFoundException {
+    public List<AttendanceResponse> getListByRoomAndDate(Long roomId, Date date) throws NotFoundException {
         log.info("Start retrieve attendance with room-id = %x and date = %y", roomId, date);
         List<Attendance> attendances = attendanceRepository.findAllByRoomIdAndDate(roomId, date);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
         }
-        return attendances;
+        return attendanceMapper.listEntityToResponse(attendances);
     }
 
-    public List<Attendance> getAll() throws NotFoundException {
+    public List<AttendanceResponse> getAll() throws NotFoundException {
         log.info("Start retrieve all attendances");
         List<Attendance> attendances = attendanceRepository.findAll();
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
         }
-        return attendances;
+        return attendanceMapper.listEntityToResponse(attendances);
     }
 
     public List<AttendanceResponse> update(UpdateAttendanceRequest updateAttendanceRequest)
@@ -92,22 +93,22 @@ public class AttendanceService {
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
-    public List<Attendance> getListFilterByDate(Date fromDate, Date toDate, Long roomId)
+    public List<AttendanceResponse> getListFilterByDate(Date fromDate, Date toDate, Long roomId)
         throws NotFoundException {
         List<Attendance> attendances =  attendanceRepository.findByRoomAndRangeDate(fromDate, toDate, roomId);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
         }
-        return attendances;
+        return attendanceMapper.listEntityToResponse(attendances);
     }
 
-    public List<Attendance> getListToProcessPrice(Date fromDate, Date toDate, Long roomId, Long studentId)
+    public List<AttendanceResponse> getListToProcessPrice(Date fromDate, Date toDate, Long roomId, Long studentId)
         throws NotFoundException {
         List<Attendance> attendances =  attendanceRepository.findAllByRoomAndStudentIdWithFromToDate(fromDate, toDate, roomId,studentId);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
         }
-        return attendances;
+        return attendanceMapper.listEntityToResponse(attendances);
     }
 
 

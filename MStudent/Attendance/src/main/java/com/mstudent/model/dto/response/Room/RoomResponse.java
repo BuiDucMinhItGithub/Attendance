@@ -17,6 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RoomResponse {
   private Long id;
+  private String name;
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date startDate;
   @JsonFormat(pattern="dd-MM-yyyy")

@@ -34,29 +34,29 @@ public class AttendanceApi {
   }
 
   @PostMapping
-  public List<Attendance> insert(@RequestBody CreateAttendanceRequest createAttendanceRequest){
+  public List<AttendanceResponse> insert(@RequestBody CreateAttendanceRequest createAttendanceRequest){
     return attendanceService.insert(createAttendanceRequest);
   }
 
   @PostMapping("/attendance-today")
-  public List<Attendance> getListAttendanceByRoomAndDate(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
+  public List<AttendanceResponse> getListAttendanceByRoomAndDate(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
       throws NotFoundException {
     return attendanceService.getListByRoomAndDate(attendanceTodayRequest.getRoomId(), attendanceTodayRequest.getDate());
   }
 
   @GetMapping("/list-all")
-  public List<Attendance> getAll() throws NotFoundException {
+  public List<AttendanceResponse> getAll() throws NotFoundException {
     return attendanceService.getAll();
   }
 
   @PostMapping("/list-range-date")
-  public List<Attendance> getAllWithRangeOfDate(@RequestBody AttendanceRangeDateRequest attendanceRangeDateRequest) throws NotFoundException {
+  public List<AttendanceResponse> getAllWithRangeOfDate(@RequestBody AttendanceRangeDateRequest attendanceRangeDateRequest) throws NotFoundException {
     return attendanceService.getListFilterByDate(attendanceRangeDateRequest.getFromDate(), attendanceRangeDateRequest.getToDate(),
         attendanceRangeDateRequest.getRoomId());
   }
 
   @PostMapping("/list-to-process")
-  public List<Attendance> getListToProcessCost(@RequestBody AttendanceToProcessCostRequest attendanceToProcessCostRequest)
+  public List<AttendanceResponse> getListToProcessCost(@RequestBody AttendanceToProcessCostRequest attendanceToProcessCostRequest)
       throws NotFoundException {
     return attendanceService.getListToProcessPrice(attendanceToProcessCostRequest.getFromDate(), attendanceToProcessCostRequest.getToDate(),
         attendanceToProcessCostRequest.getRoomId(), attendanceToProcessCostRequest.getStudentId());

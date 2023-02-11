@@ -9,6 +9,7 @@ com\mstudent\enums\RoomState.class
 com\mstudent\model\dto\request\Room\UpdateRoomRequest.class
 com\mstudent\mapper\TeacherMapperImpl.class
 com\mstudent\model\dto\request\Cost\CostFindByRoomAndMonth.class
+com\mstudent\model\dto\response\Room\RoomCostResponse.class
 com\mstudent\model\dto\request\Attendance\CreateAttendanceRequest.class
 com\mstudent\model\dto\request\Attendance\UpdateAttendanceRequest.class
 com\mstudent\service\RoomService.class
@@ -23,6 +24,7 @@ com\mstudent\model\dto\response\Cost\CostResponse.class
 com\mstudent\model\dto\request\Attendance\AttendanceRangeDateRequest.class
 com\mstudent\mapper\CostMapper.class
 com\mstudent\config\JwtTokenProvider.class
+com\mstudent\model\dto\response\Student\StudentShortResponse.class
 com\mstudent\model\dto\response\Teacher\TeacherResponse.class
 com\mstudent\mapper\StudentMapper.class
 com\mstudent\controller\StudentApi.class
@@ -34,6 +36,7 @@ com\mstudent\config\SecurityConfig.class
 com\mstudent\model\base\TokenRefreshResponse.class
 com\mstudent\service\CostService.class
 com\mstudent\config\KafkaConfig.class
+com\mstudent\model\dto\response\Room\RoomAttendanceResponse.class
 com\mstudent\exception\CustomAccessDeniedHandler.class
 com\mstudent\enums\TeacherState.class
 com\mstudent\repository\RoomRepository.class
@@ -74,7 +77,6 @@ com\mstudent\specification\StudentSpecification.class
 com\mstudent\repository\TeacherRepository.class
 com\mstudent\service\StudentService.class
 com\mstudent\model\dto\request\Attendance\AttendanceTodayRequest.class
-com\mstudent\model\dto\response\Student\StudentInRoomResponse.class
 com\mstudent\Main.class
 com\mstudent\model\base\RefreshToken.class
 com\mstudent\mapper\TeacherMapper.class

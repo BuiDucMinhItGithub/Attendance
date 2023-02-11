@@ -1,8 +1,8 @@
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\config\MailConfig.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\config\KafkaConfig.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\controller\NotificationController.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\service\NotificationService.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\repository\NotificationRepository.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\model\Notification.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\Main.java
-D:\VM\MStudent-master\MStudent-master\Email-Process\src\main\java\com\mstudent\config\MyConstants.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\config\KafkaConfig.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\config\MailConfig.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\service\NotificationService.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\model\Notification.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\repository\NotificationRepository.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\config\MyConstants.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\controller\NotificationController.java
+C:\Users\KyThuat88\Desktop\Attendance\MStudent\Email-Process\src\main\java\com\mstudent\Main.java

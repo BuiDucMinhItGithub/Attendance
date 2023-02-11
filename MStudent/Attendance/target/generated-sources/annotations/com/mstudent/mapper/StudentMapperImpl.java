@@ -4,8 +4,8 @@ import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentInRoomRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
 import com.mstudent.model.dto.response.Student.StudentFullResponse;
-import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
 import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import com.mstudent.model.entity.Student;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-10T15:50:43+0700",
+    date = "2023-02-11T23:44:29+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -129,31 +129,31 @@ public class StudentMapperImpl implements StudentMapper {
     }
 
     @Override
-    public StudentInRoomResponse entityToInRoomResponse(Student student) {
+    public StudentShortResponse entityToShortResponse(Student student) {
 
-        StudentInRoomResponse studentInRoomResponse = new StudentInRoomResponse();
+        StudentShortResponse studentShortResponse = new StudentShortResponse();
 
         if ( student != null ) {
             if ( student.getId() != null ) {
-                studentInRoomResponse.setId( student.getId() );
+                studentShortResponse.setId( student.getId() );
             }
             if ( student.getFullName() != null ) {
-                studentInRoomResponse.setFullName( student.getFullName() );
+                studentShortResponse.setFullName( student.getFullName() );
             }
         }
 
-        return studentInRoomResponse;
+        return studentShortResponse;
     }
 
     @Override
-    public List<StudentInRoomResponse> listEntityToInRoomResponse(List<Student> students) {
+    public List<StudentShortResponse> listEntityToInRoomResponse(List<Student> students) {
         if ( students == null ) {
-            return new ArrayList<StudentInRoomResponse>();
+            return new ArrayList<StudentShortResponse>();
         }
 
-        List<StudentInRoomResponse> list = new ArrayList<StudentInRoomResponse>( students.size() );
+        List<StudentShortResponse> list = new ArrayList<StudentShortResponse>( students.size() );
         for ( Student student : students ) {
-            list.add( entityToInRoomResponse( student ) );
+            list.add( studentToStudentShortResponse( student ) );
         }
 
         return list;
@@ -180,5 +180,21 @@ public class StudentMapperImpl implements StudentMapper {
         }
 
         return studentResponse;
+    }
+
+    protected StudentShortResponse studentToStudentShortResponse(Student student) {
+
+        StudentShortResponse studentShortResponse = new StudentShortResponse();
+
+        if ( student != null ) {
+            if ( student.getId() != null ) {
+                studentShortResponse.setId( student.getId() );
+            }
+            if ( student.getFullName() != null ) {
+                studentShortResponse.setFullName( student.getFullName() );
+            }
+        }
+
+        return studentShortResponse;
     }
 }

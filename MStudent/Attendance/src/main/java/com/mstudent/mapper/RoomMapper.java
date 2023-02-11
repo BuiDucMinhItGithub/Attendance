@@ -2,17 +2,11 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
-import com.mstudent.model.dto.response.Room.RoomCreateResponse;
-import com.mstudent.model.dto.response.Room.RoomResponse;
-import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
+import com.mstudent.model.dto.response.Room.*;
 import com.mstudent.model.entity.Room;
 import java.util.List;
-import org.mapstruct.CollectionMappingStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.NullValueMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper( componentModel = "spring",
@@ -37,4 +31,9 @@ public interface RoomMapper {
     RoomUpdateResponse entityToUpdateResponse(Room room);
 
     List<RoomResponse> listEntityToResponse(List<Room> rooms);
+    @Named("entityToRoomAttendance")
+    RoomAttendanceResponse entityToRoomAttendance(Room room);
+
+    @Named("entityToCostResponse")
+    RoomCostResponse entityToCostResponse(Room room);
 }

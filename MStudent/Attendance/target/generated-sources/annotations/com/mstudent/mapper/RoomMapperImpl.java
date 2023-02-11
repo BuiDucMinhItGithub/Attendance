@@ -2,10 +2,12 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
+import com.mstudent.model.dto.response.Room.RoomAttendanceResponse;
+import com.mstudent.model.dto.response.Room.RoomCostResponse;
 import com.mstudent.model.dto.response.Room.RoomCreateResponse;
 import com.mstudent.model.dto.response.Room.RoomResponse;
 import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
-import com.mstudent.model.dto.response.Student.StudentInRoomResponse;
+import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.model.entity.Student;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-10T15:50:43+0700",
+    date = "2023-02-11T23:44:28+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -89,6 +91,9 @@ public class RoomMapperImpl implements RoomMapper {
             if ( room.getId() != null ) {
                 roomResponse.setId( room.getId() );
             }
+            if ( room.getName() != null ) {
+                roomResponse.setName( room.getName() );
+            }
             if ( room.getStartDate() != null ) {
                 roomResponse.setStartDate( room.getStartDate() );
             }
@@ -116,6 +121,9 @@ public class RoomMapperImpl implements RoomMapper {
             if ( room.getId() != null ) {
                 roomCreateResponse.setId( room.getId() );
             }
+            if ( room.getName() != null ) {
+                roomCreateResponse.setName( room.getName() );
+            }
             if ( room.getStartDate() != null ) {
                 roomCreateResponse.setStartDate( room.getStartDate() );
             }
@@ -137,12 +145,15 @@ public class RoomMapperImpl implements RoomMapper {
         RoomUpdateResponse roomUpdateResponse = new RoomUpdateResponse();
 
         if ( room != null ) {
-            List<StudentInRoomResponse> list = studentMapper.listEntityToInRoomResponse( room.getStudents() );
+            List<StudentShortResponse> list = studentMapper.listEntityToInRoomResponse( room.getStudents() );
             if ( list != null ) {
                 roomUpdateResponse.setStudents( list );
             }
             if ( room.getId() != null ) {
                 roomUpdateResponse.setId( room.getId() );
+            }
+            if ( room.getName() != null ) {
+                roomUpdateResponse.setName( room.getName() );
             }
             if ( room.getStartDate() != null ) {
                 roomUpdateResponse.setStartDate( room.getStartDate() );
@@ -171,5 +182,39 @@ public class RoomMapperImpl implements RoomMapper {
         }
 
         return list;
+    }
+
+    @Override
+    public RoomAttendanceResponse entityToRoomAttendance(Room room) {
+
+        RoomAttendanceResponse roomAttendanceResponse = new RoomAttendanceResponse();
+
+        if ( room != null ) {
+            if ( room.getId() != null ) {
+                roomAttendanceResponse.setId( room.getId() );
+            }
+            if ( room.getName() != null ) {
+                roomAttendanceResponse.setName( room.getName() );
+            }
+        }
+
+        return roomAttendanceResponse;
+    }
+
+    @Override
+    public RoomCostResponse entityToCostResponse(Room room) {
+
+        RoomCostResponse roomCostResponse = new RoomCostResponse();
+
+        if ( room != null ) {
+            if ( room.getId() != null ) {
+                roomCostResponse.setId( room.getId() );
+            }
+            if ( room.getName() != null ) {
+                roomCostResponse.setName( room.getName() );
+            }
+        }
+
+        return roomCostResponse;
     }
 }

@@ -15,6 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RoomCreateResponse {
   private Long id;
+
+  private String name;
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date startDate;
   private TeacherResponse teacherResponse;
