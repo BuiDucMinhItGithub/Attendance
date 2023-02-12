@@ -95,7 +95,7 @@ public class AttendanceService {
 
     public List<AttendanceResponse> getListFilterByDate(Date fromDate, Date toDate, Long roomId)
         throws NotFoundException {
-        List<Attendance> attendances =  attendanceRepository.findByRoomAndRangeDate(fromDate, toDate, roomId);
+        List<Attendance> attendances =  attendanceRepository.findByRoomIdAndRangeDate(fromDate, toDate, roomId);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
         }
@@ -104,7 +104,7 @@ public class AttendanceService {
 
     public List<AttendanceResponse> getListToProcessPrice(Date fromDate, Date toDate, Long roomId, Long studentId)
         throws NotFoundException {
-        List<Attendance> attendances =  attendanceRepository.findAllByRoomAndStudentIdWithFromToDate(fromDate, toDate, roomId,studentId);
+        List<Attendance> attendances =  attendanceRepository.findAllByRoomIdAndStudentIdWithRangeDate(fromDate, toDate, roomId,studentId);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
         }
@@ -131,14 +131,14 @@ public class AttendanceService {
         List<StudentAttendance> studentAttendances = updateAttendanceRequest.getStudentAttendances();
         studentAttendances.forEach(studentAttendance -> {
             log.info("Get attendance of student at lesson need to update");
-            Attendance attendance = attendanceRepository.findByRoomAndStudentIdWithDateAndState(
+            Attendance attendance = attendanceRepository.findByRoomIdAndStudentIdWithDateAndState(
                 updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                 updateAttendanceRequest.getDate(), studentAttendance.getState());
             // Neu khong tim thay thi tao moi 1 thong tin diem danh cua sinh vien do
             // Sinh vien khac state se khong tim thay
             if(Objects.isNull(attendance)){
                 log.info("Start update attendance for student");
-                Attendance attendanceToRemove = attendanceRepository.findByRoomAndStudentIdWithDate(
+                Attendance attendanceToRemove = attendanceRepository.findByRoomIdAndStudentIdWithDate(
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                     updateAttendanceRequest.getDate());
                 attendanceRepository.delete(attendanceToRemove);
@@ -176,7 +176,7 @@ public class AttendanceService {
         students.forEach(student -> {
             log.info("Start create cost per month for student with id = %s", student.getId());
             List<Attendance> attendancesOfStudents =
-                attendanceRepository.findAllByRoomAndStudentIdAndMonth( getMonthAndYear(date),
+                attendanceRepository.findAllByRoomIdAndStudentIdAndMonthAndState( getMonthAndYear(date),
                     roomId, student.getId(), AttendanceState.PRESENT.getValue());
             Cost cost = new Cost();
             cost.setPrice(room.getPricePerLesson().subtract(

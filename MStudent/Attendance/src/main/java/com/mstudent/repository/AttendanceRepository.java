@@ -17,7 +17,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
       + "WHERE a.room.id = :roomId "
       + "AND s.id = :studentId "
       + "AND a.date = :date AND a.state = :state")
-  Attendance findByRoomAndStudentIdWithDateAndState(Long roomId, Long studentId, Date date, String state);
+  Attendance findByRoomIdAndStudentIdWithDateAndState(Long roomId, Long studentId, Date date, String state);
 
   @Query("SELECT a FROM Attendance a "
       + "JOIN Room b ON a.room.id = b.id "
@@ -25,13 +25,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
       + "WHERE a.room.id = :roomId "
       + "AND s.id = :studentId "
       + "AND a.date = :date")
-  Attendance findByRoomAndStudentIdWithDate(Long roomId, Long studentId, Date date);
+  Attendance findByRoomIdAndStudentIdWithDate(Long roomId, Long studentId, Date date);
   @Query("SELECT a FROM Attendance a "
       + "JOIN Room r ON a.room.id = r.id "
       + "WHERE r.id = :roomId "
       + "AND a.date > :fromDate "
       + "AND a.date < :toDate")
-  List<Attendance> findByRoomAndRangeDate(Date fromDate, Date toDate, Long roomId);
+  List<Attendance> findByRoomIdAndRangeDate(Date fromDate, Date toDate, Long roomId);
 
   @Query("SELECT a FROM Attendance a "
       + "JOIN Room r ON a.room.id = r.id "
@@ -40,7 +40,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
       + "AND s.id = :studentId "
       + "AND a.date > :fromDate "
       + "AND a.date < :toDate")
-  List<Attendance> findAllByRoomAndStudentIdWithFromToDate(Date fromDate, Date toDate, Long roomId, Long studentId);
+  List<Attendance> findAllByRoomIdAndStudentIdWithRangeDate(Date fromDate, Date toDate, Long roomId, Long studentId);
 
   @Query("SELECT a FROM Attendance a "
       + "JOIN Room r ON a.room.id = r.id "
@@ -48,6 +48,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
       + "WHERE r.id = :roomId "
       + "AND s.id = :studentId "
       + "AND a.month = :month AND a.state = :state ")
-  List<Attendance> findAllByRoomAndStudentIdAndMonth(String month, Long roomId, Long studentId, String state);
+  List<Attendance> findAllByRoomIdAndStudentIdAndMonthAndState(String month, Long roomId, Long studentId, String state);
 
 }
