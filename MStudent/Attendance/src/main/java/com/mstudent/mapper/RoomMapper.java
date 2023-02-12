@@ -27,6 +27,11 @@ public interface RoomMapper {
 
     RoomCreateResponse entityToCreateResponse(Room room);
 
+
+    RoomShortResponse entityToShortResponse(Room room);
+
+    List<RoomShortResponse> listEntityToShortResponse(List<Room> rooms);
+
     @Mapping(target = "students", qualifiedByName = "listEntityToInRoomResponse")
     RoomUpdateResponse entityToUpdateResponse(Room room);
 

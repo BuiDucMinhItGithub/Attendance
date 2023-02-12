@@ -3,13 +3,13 @@ package com.mstudent.controller;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
-import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.dto.response.Student.StudentFullResponse;
+import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.service.StudentService;
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/student")

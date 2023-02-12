@@ -9,6 +9,7 @@ import com.mstudent.model.dto.request.Room.CreateRoomRequest;
 import com.mstudent.model.dto.request.Room.UpdateRoomRequest;
 import com.mstudent.model.dto.response.Room.RoomCreateResponse;
 import com.mstudent.model.dto.response.Room.RoomResponse;
+import com.mstudent.model.dto.response.Room.RoomShortResponse;
 import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
@@ -65,5 +66,13 @@ public class RoomService {
             throw new NotFoundException("exception.list.null");
         }
         return roomMapper.listEntityToResponse(rooms);
+    }
+
+    public List<RoomShortResponse> getAll() throws NotFoundException {
+        List<Room> rooms = roomRepository.findAll();
+        if(CollectionUtils.isEmpty(rooms)){
+            throw new NotFoundException("exception.list.null");
+        }
+        return roomMapper.listEntityToShortResponse(rooms);
     }
 }
