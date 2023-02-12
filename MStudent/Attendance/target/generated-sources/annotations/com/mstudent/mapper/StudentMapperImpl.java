@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-11T23:44:29+0700",
+    date = "2023-02-12T22:20:46+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -143,6 +143,20 @@ public class StudentMapperImpl implements StudentMapper {
         }
 
         return studentShortResponse;
+    }
+
+    @Override
+    public List<StudentShortResponse> listEntityToShortResponse(List<Student> students) {
+        if ( students == null ) {
+            return new ArrayList<StudentShortResponse>();
+        }
+
+        List<StudentShortResponse> list = new ArrayList<StudentShortResponse>( students.size() );
+        for ( Student student : students ) {
+            list.add( studentToStudentShortResponse( student ) );
+        }
+
+        return list;
     }
 
     @Override

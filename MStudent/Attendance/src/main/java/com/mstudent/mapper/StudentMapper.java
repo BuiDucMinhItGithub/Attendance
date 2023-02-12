@@ -39,6 +39,8 @@ public interface StudentMapper {
     @Named("entityToShortResponse")
     StudentShortResponse entityToShortResponse(Student student);
 
+    List<StudentShortResponse> listEntityToShortResponse(List<Student> students);
+
     @Named("listEntityToInRoomResponse")
     List<StudentShortResponse> listEntityToInRoomResponse(List<Student> students);
 

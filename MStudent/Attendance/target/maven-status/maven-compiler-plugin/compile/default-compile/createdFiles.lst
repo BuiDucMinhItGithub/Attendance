@@ -1,3 +1,4 @@
+com\mstudent\model\dto\response\Room\RoomShortResponse.class
 com\mstudent\service\UserService.class
 com\mstudent\model\base\LoginRequest.class
 com\mstudent\specification\RoomSpecification.class
@@ -5,6 +6,7 @@ com\mstudent\model\dto\request\Room\CreateRoomRequest.class
 com\mstudent\service\AttendanceService.class
 com\mstudent\controller\AttendanceApi.class
 com\mstudent\model\dto\request\Attendance\StudentAttendance.class
+com\mstudent\controller\AdminApi.class
 com\mstudent\enums\RoomState.class
 com\mstudent\model\dto\request\Room\UpdateRoomRequest.class
 com\mstudent\mapper\TeacherMapperImpl.class
@@ -71,6 +73,7 @@ com\mstudent\repository\StudentRepository.class
 com\mstudent\enums\RoleType.class
 com\mstudent\exception\TokenRefreshException.class
 com\mstudent\model\dto\request\Student\CreateStudentRequest.class
+com\mstudent\service\BaseService.class
 com\mstudent\model\base\JwtResponse.class
 com\mstudent\model\dto\response\Student\StudentFullResponse.class
 com\mstudent\specification\StudentSpecification.class

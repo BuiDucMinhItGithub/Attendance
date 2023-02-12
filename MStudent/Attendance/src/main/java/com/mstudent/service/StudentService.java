@@ -7,6 +7,7 @@ import com.mstudent.model.dto.request.Student.CreateStudentRequest;
 import com.mstudent.model.dto.request.Student.UpdateStudentRequest;
 import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.dto.response.Student.StudentFullResponse;
+import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import com.mstudent.model.entity.Student;
 import com.mstudent.repository.StudentRepository;
 import java.util.Objects;
@@ -65,5 +66,14 @@ public class StudentService {
             throw new NotFoundException("exception.list.null");
         }
         return studentMapper.listEntityToResponse(students);
+    }
+
+
+    public List<StudentShortResponse> getAllStudent() throws NotFoundException {
+        List<Student> students = studentRepository.findAll();
+        if(CollectionUtils.isEmpty(students)){
+            throw new NotFoundException("exception.list.null");
+        }
+        return studentMapper.listEntityToShortResponse(students);
     }
 }

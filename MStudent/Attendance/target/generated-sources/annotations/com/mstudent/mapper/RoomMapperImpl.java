@@ -6,6 +6,7 @@ import com.mstudent.model.dto.response.Room.RoomAttendanceResponse;
 import com.mstudent.model.dto.response.Room.RoomCostResponse;
 import com.mstudent.model.dto.response.Room.RoomCreateResponse;
 import com.mstudent.model.dto.response.Room.RoomResponse;
+import com.mstudent.model.dto.response.Room.RoomShortResponse;
 import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import com.mstudent.model.entity.Room;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-11T23:44:28+0700",
+    date = "2023-02-12T22:20:45+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -137,6 +138,47 @@ public class RoomMapperImpl implements RoomMapper {
         }
 
         return roomCreateResponse;
+    }
+
+    @Override
+    public RoomShortResponse entityToShortResponse(Room room) {
+
+        RoomShortResponse roomShortResponse = new RoomShortResponse();
+
+        if ( room != null ) {
+            if ( room.getId() != null ) {
+                roomShortResponse.setId( room.getId() );
+            }
+            if ( room.getName() != null ) {
+                roomShortResponse.setName( room.getName() );
+            }
+            if ( room.getStartDate() != null ) {
+                roomShortResponse.setStartDate( room.getStartDate() );
+            }
+            roomShortResponse.setNumberOfStudent( room.getNumberOfStudent() );
+            if ( room.getState() != null ) {
+                roomShortResponse.setState( room.getState() );
+            }
+            if ( room.getPricePerLesson() != null ) {
+                roomShortResponse.setPricePerLesson( room.getPricePerLesson() );
+            }
+        }
+
+        return roomShortResponse;
+    }
+
+    @Override
+    public List<RoomShortResponse> listEntityToShortResponse(List<Room> rooms) {
+        if ( rooms == null ) {
+            return new ArrayList<RoomShortResponse>();
+        }
+
+        List<RoomShortResponse> list = new ArrayList<RoomShortResponse>( rooms.size() );
+        for ( Room room : rooms ) {
+            list.add( entityToShortResponse( room ) );
+        }
+
+        return list;
     }
 
     @Override
