@@ -16,5 +16,7 @@ public class Notification {
     private Long id;
     private String title;
     private String content;
-
+    private String date;
+    private String studentName;
+    private String roomName;
 }
