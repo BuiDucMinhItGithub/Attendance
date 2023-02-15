@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-13T17:19:21+0700",
+    date = "2023-02-15T10:16:06+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -26,7 +26,7 @@ public class AttendanceMapperImpl implements AttendanceMapper {
 
         if ( attendance != null ) {
             if ( attendance.getRoom() != null ) {
-                attendanceResponse.setRoom( roomMapper.entityToRoomAttendance( attendance.getRoom() ) );
+                attendanceResponse.setRoomAttendanceResponse( roomMapper.entityToRoomAttendance( attendance.getRoom() ) );
             }
             if ( attendance.getId() != null ) {
                 attendanceResponse.setId( attendance.getId() );
