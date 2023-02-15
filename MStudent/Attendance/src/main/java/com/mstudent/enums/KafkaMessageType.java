@@ -2,7 +2,8 @@ package com.mstudent.enums;
 
 public enum KafkaMessageType {
   EMAIL(1,"EMAIL"),
-  SMS(2,"SMS");
+  COST(2,"COST"),
+  SMS(3,"SMS");
 
   private final int key;
   private final String value;
