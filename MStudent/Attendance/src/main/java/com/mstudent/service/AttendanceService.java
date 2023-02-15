@@ -57,8 +57,16 @@ public class AttendanceService {
         this.attendanceMapper = attendanceMapper;
     }
 
-    public List<AttendanceResponse> insert(CreateAttendanceRequest createAttendanceRequest){
+    public List<AttendanceResponse> insert(CreateAttendanceRequest createAttendanceRequest)
+        throws NotFoundException {
+        log.info("Start save attendance for student");
+        if(CollectionUtils.isEmpty(createAttendanceRequest.getStudentAttendances())){
+            throw new NotFoundException("exception.list.null");
+        }
         List<Attendance> attendances = mapRequestToEntity(createAttendanceRequest);
+        if(CollectionUtils.isEmpty(attendances)){
+            throw new NotFoundException("exception.list.null");
+        }
         attendanceRepository.saveAll(attendances);
         attendances.forEach(attendance -> {
             AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();

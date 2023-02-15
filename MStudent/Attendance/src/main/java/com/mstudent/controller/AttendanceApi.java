@@ -34,7 +34,8 @@ public class AttendanceApi {
   }
 
   @PostMapping
-  public List<AttendanceResponse> insert(@RequestBody CreateAttendanceRequest createAttendanceRequest){
+  public List<AttendanceResponse> insert(@RequestBody CreateAttendanceRequest createAttendanceRequest)
+      throws NotFoundException {
     return attendanceService.insert(createAttendanceRequest);
   }
 
