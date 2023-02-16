@@ -27,28 +27,7 @@ public class NotificationService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendEmail(String messageReceive) throws JsonProcessingException {
-        ObjectMapper obj = new ObjectMapper();
-        TypeNotification typeNotification = obj.readValue(messageReceive, TypeNotification.class);
-        if(typeNotification.getType().equals(EmailType.ATTENDANCE.getValue())){
-            sendNotification(attendanceProcess(messageReceive));
-        } else if(typeNotification.getType().equals(EmailType.COST.getValue())){
-            sendNotification(costProcess(messageReceive));
-        }
-    }
-
-    public void sendNotification(Notification notification){
-        // Create a Simple MailMessage and send message
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(MyConstants.MY_EMAIL);
-        message.setTo(MyConstants.FRIEND_EMAIL);
-        message.setSubject(notification.getTitle());
-        message.setText(notification.getContent());
-        javaMailSender.send(message);
-    }
-
-    public Notification attendanceProcess(String messageReceive)
-        throws JsonProcessingException {
+    public void sendEmailAttendance(String messageReceive) throws JsonProcessingException {
         ObjectMapper obj = new ObjectMapper();
         Notification notification = new Notification();
         Attendance attendance = obj.readValue(messageReceive, Attendance.class);
@@ -66,10 +45,20 @@ public class NotificationService {
             "Thông tin điểm danh lớp " + attendance.getRoomName() + "ngày " + attendance.getDate());
         notification.setRoomName(attendance.getRoomName());
         notification.setStudentName(attendance.getStudentName());
-        return notification;
+        sendNotification(notification);
     }
 
-    public Notification costProcess(String messageReceive) throws JsonProcessingException {
+    public void sendNotification(Notification notification){
+        // Create a Simple MailMessage and send message
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(MyConstants.MY_EMAIL);
+        message.setTo(MyConstants.FRIEND_EMAIL);
+        message.setSubject(notification.getTitle());
+        message.setText(notification.getContent());
+        javaMailSender.send(message);
+    }
+
+    public void sendEmailCost(String messageReceive) throws JsonProcessingException {
         ObjectMapper obj = new ObjectMapper();
         Notification notification = new Notification();
         Cost cost = obj.readValue(messageReceive, Cost.class);
@@ -79,6 +68,6 @@ public class NotificationService {
         notification.setTitle("Thông báo tiền học tháng "+cost.getMonth());
         notification.setRoomName(cost.getRoomName());
         notification.setStudentName(cost.getStudentName());
-        return notification;
+        sendNotification(notification);
     }
 }

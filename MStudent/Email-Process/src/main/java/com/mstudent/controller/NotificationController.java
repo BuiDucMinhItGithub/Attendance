@@ -20,12 +20,12 @@ public class NotificationController {
 
   @KafkaListener(topics = "email-topic", groupId = "group-id")
   public void sendEmailForAttendance(String messageReceive) throws JsonProcessingException {
-    notificationService.sendEmail(messageReceive);
+    notificationService.sendEmailAttendance(messageReceive);
   }
 
   @KafkaListener(topics = "cost-topic", groupId = "group-id")
   public void sendEmailForCost(String messageReceive) throws JsonProcessingException {
-
+    notificationService.sendEmailCost(messageReceive);
   }
 
 }
