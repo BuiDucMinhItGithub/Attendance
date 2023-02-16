@@ -235,6 +235,6 @@ public class AttendanceService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         String strDate = dateFormat.format(date);
         String[] splits = strDate.split("-");
-        return splits[0].concat(splits[1]);
+        return splits[0].concat("-"+splits[1]);
     }
 }

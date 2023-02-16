@@ -62,7 +62,6 @@ public class NotificationService {
         ObjectMapper obj = new ObjectMapper();
         Notification notification = new Notification();
         Cost cost = obj.readValue(messageReceive, Cost.class);
-        String content = null;
         notification.setContent("Học sinh "+ cost.getStudentName()+ "đã đóng tiền học "+cost.getMonth());
         notification.setDate(cost.getDate());
         notification.setTitle("Thông báo tiền học tháng "+cost.getMonth());
