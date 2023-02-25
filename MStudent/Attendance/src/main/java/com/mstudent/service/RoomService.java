@@ -13,6 +13,8 @@ import com.mstudent.model.dto.response.Room.RoomShortResponse;
 import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.repository.RoomRepository;
+
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +37,7 @@ public class RoomService {
     public RoomCreateResponse insert(CreateRoomRequest createRoomRequest){
         Room room = roomMapper.createRequestToEntity(createRoomRequest);
         room.setState(RoomState.OPEN.getValue());
-        room.setStartDate(Date.from(OffsetDateTime.now().toInstant()));
+        room.setStartDate(LocalDate.now());
         roomRepository.save(room);
         return roomMapper.entityToCreateResponse(room);
     }

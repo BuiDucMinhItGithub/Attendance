@@ -1,5 +1,6 @@
 package com.mstudent.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +27,9 @@ public class Student {
     private String fullName;
 
     @Column(name = "birthday")
-    private Date birthday;
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private LocalDate birthday;
 
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     private List<Room> rooms;

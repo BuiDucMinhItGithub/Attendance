@@ -11,7 +11,10 @@ import com.mstudent.model.dto.response.Room.RoomUpdateResponse;
 import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import com.mstudent.model.entity.Room;
 import com.mstudent.model.entity.Student;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-16T09:46:26+0700",
+    date = "2023-02-26T00:02:36+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -71,7 +74,7 @@ public class RoomMapperImpl implements RoomMapper {
                 room.setName( updateRoomRequest.getName() );
             }
             if ( updateRoomRequest.getStartDate() != null ) {
-                room.setStartDate( updateRoomRequest.getStartDate() );
+                room.setStartDate( LocalDateTime.ofInstant( updateRoomRequest.getStartDate().toInstant(), ZoneOffset.UTC ).toLocalDate() );
             }
             room.setNumberOfStudent( updateRoomRequest.getNumberOfStudent() );
             if ( updateRoomRequest.getState() != null ) {
@@ -98,10 +101,10 @@ public class RoomMapperImpl implements RoomMapper {
                 roomResponse.setName( room.getName() );
             }
             if ( room.getStartDate() != null ) {
-                roomResponse.setStartDate( room.getStartDate() );
+                roomResponse.setStartDate( Date.from( room.getStartDate().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             if ( room.getEndDate() != null ) {
-                roomResponse.setEndDate( room.getEndDate() );
+                roomResponse.setEndDate( Date.from( room.getEndDate().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             roomResponse.setNumberOfStudent( room.getNumberOfStudent() );
             if ( room.getState() != null ) {
@@ -128,7 +131,7 @@ public class RoomMapperImpl implements RoomMapper {
                 roomCreateResponse.setName( room.getName() );
             }
             if ( room.getStartDate() != null ) {
-                roomCreateResponse.setStartDate( room.getStartDate() );
+                roomCreateResponse.setStartDate( Date.from( room.getStartDate().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             roomCreateResponse.setNumberOfStudent( room.getNumberOfStudent() );
             if ( room.getState() != null ) {
@@ -155,7 +158,7 @@ public class RoomMapperImpl implements RoomMapper {
                 roomShortResponse.setName( room.getName() );
             }
             if ( room.getStartDate() != null ) {
-                roomShortResponse.setStartDate( room.getStartDate() );
+                roomShortResponse.setStartDate( Date.from( room.getStartDate().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             roomShortResponse.setNumberOfStudent( room.getNumberOfStudent() );
             if ( room.getState() != null ) {
@@ -200,7 +203,7 @@ public class RoomMapperImpl implements RoomMapper {
                 roomUpdateResponse.setName( room.getName() );
             }
             if ( room.getStartDate() != null ) {
-                roomUpdateResponse.setStartDate( room.getStartDate() );
+                roomUpdateResponse.setStartDate( Date.from( room.getStartDate().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             roomUpdateResponse.setNumberOfStudent( room.getNumberOfStudent() );
             if ( room.getState() != null ) {

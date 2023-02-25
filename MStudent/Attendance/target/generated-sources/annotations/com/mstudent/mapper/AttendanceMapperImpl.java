@@ -2,7 +2,9 @@ package com.mstudent.mapper;
 
 import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
 import com.mstudent.model.entity.Attendance;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-16T09:46:26+0700",
+    date = "2023-02-26T00:02:37+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -32,10 +34,10 @@ public class AttendanceMapperImpl implements AttendanceMapper {
                 attendanceResponse.setId( attendance.getId() );
             }
             if ( attendance.getDate() != null ) {
-                attendanceResponse.setDate( attendance.getDate() );
+                attendanceResponse.setDate( Date.from( attendance.getDate().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             if ( attendance.getMonth() != null ) {
-                attendanceResponse.setMonth( Integer.parseInt( attendance.getMonth() ) );
+                attendanceResponse.setMonth( attendance.getMonth() );
             }
             if ( attendance.getState() != null ) {
                 attendanceResponse.setState( attendance.getState() );

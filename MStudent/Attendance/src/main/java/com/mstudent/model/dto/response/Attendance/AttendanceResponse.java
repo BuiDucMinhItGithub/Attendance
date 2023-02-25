@@ -20,7 +20,7 @@ public class AttendanceResponse {
   private Long id;
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date date;
-  private int month;
+  private String month;
   private String state;
   private StudentResponse studentResponse;
   private RoomAttendanceResponse roomAttendanceResponse;

@@ -1,6 +1,8 @@
 package com.mstudent.model.dto.request.Attendance;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,5 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateAttendanceRequest {
     private List<StudentAttendance> studentAttendances;
-    @JsonFormat(pattern="dd-MM-yyyy")
-    private Date date;
     private Long roomId;
 }

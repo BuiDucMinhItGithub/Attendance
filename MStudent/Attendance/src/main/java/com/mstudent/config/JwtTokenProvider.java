@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private static final Key secret = MacProvider.generateKey(SignatureAlgorithm.HS256);
     private static final byte[] secretBytes = secret.getEncoded();
     private static final String base64SecretBytes = Base64.getEncoder().encodeToString(secretBytes);
-    private static final long EXPIRE_TIME = 30000;
+    private static final long EXPIRE_TIME = 800000;
     private static final long refreshTokenDurationMs = 86400000;
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class.getName());
     @Autowired

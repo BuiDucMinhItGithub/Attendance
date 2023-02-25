@@ -7,9 +7,10 @@ import com.mstudent.model.dto.request.Attendance.AttendanceTodayRequest;
 import com.mstudent.model.dto.request.Attendance.CreateAttendanceRequest;
 import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
 import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
-import com.mstudent.model.entity.Attendance;
 import com.mstudent.service.AttendanceService;
 import java.util.List;
+
+import com.mstudent.utils.DateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttendanceApi {
 
   private final AttendanceService attendanceService;
+  private final DateUtils dateUtils;
 
-  public AttendanceApi(AttendanceService attendanceService) {
+  public AttendanceApi(AttendanceService attendanceService, DateUtils dateUtils) {
     this.attendanceService = attendanceService;
+    this.dateUtils = dateUtils;
   }
 
   @PutMapping
@@ -42,7 +45,7 @@ public class AttendanceApi {
   @PostMapping("/attendance-today")
   public List<AttendanceResponse> getListAttendanceByRoomAndDate(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
       throws NotFoundException {
-    return attendanceService.getListByRoomAndDate(attendanceTodayRequest.getRoomId(), attendanceTodayRequest.getDate());
+    return attendanceService.getListByRoomAndDate(attendanceTodayRequest.getRoomId(),dateUtils.changeFormatDate(attendanceTodayRequest.getDate()));
   }
 
   @GetMapping("/list-all")
@@ -52,20 +55,22 @@ public class AttendanceApi {
 
   @PostMapping("/list-range-date")
   public List<AttendanceResponse> getAllWithRangeOfDate(@RequestBody AttendanceRangeDateRequest attendanceRangeDateRequest) throws NotFoundException {
-    return attendanceService.getListFilterByDate(attendanceRangeDateRequest.getFromDate(), attendanceRangeDateRequest.getToDate(),
+    return attendanceService.getListFilterByDate(dateUtils.changeFormatDate(attendanceRangeDateRequest.getFromDate()),
+            dateUtils.changeFormatDate(attendanceRangeDateRequest.getToDate()),
         attendanceRangeDateRequest.getRoomId());
   }
 
   @PostMapping("/list-to-process")
   public List<AttendanceResponse> getListToProcessCost(@RequestBody AttendanceToProcessCostRequest attendanceToProcessCostRequest)
       throws NotFoundException {
-    return attendanceService.getListToProcessPrice(attendanceToProcessCostRequest.getFromDate(), attendanceToProcessCostRequest.getToDate(),
+    return attendanceService.getListToProcessPrice(dateUtils.changeFormatDate(attendanceToProcessCostRequest.getFromDate()),
+            dateUtils.changeFormatDate(attendanceToProcessCostRequest.getToDate()),
         attendanceToProcessCostRequest.getRoomId(), attendanceToProcessCostRequest.getStudentId());
   }
 
-  @PostMapping("/process-cost")
-  public boolean processCostPerMonthForStudent(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
-      throws NotFoundException {
-    return attendanceService.processPricePerMonth(attendanceTodayRequest.getRoomId(), attendanceTodayRequest.getDate());
-  }
+//  @PostMapping("/process-cost")
+//  public boolean processCostPerMonthForStudent(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
+//      throws NotFoundException {
+//    return attendanceService.processPricePerMonth(attendanceTodayRequest.getRoomId(), attendanceTodayRequest.getDate());
+//  }
 }

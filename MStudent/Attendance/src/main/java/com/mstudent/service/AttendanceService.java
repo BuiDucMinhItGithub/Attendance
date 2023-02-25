@@ -24,7 +24,9 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,13 +78,13 @@ public class AttendanceService {
             attendanceKafkaMessage.setStudentName(attendance.getStudent().getFullName());
             attendanceKafkaMessage.setType(KafkaMessageType.EMAIL.getValue());
             ObjectMapper Obj = new ObjectMapper();
-            String jsonStr = null;
-            try {
-                jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
-                kafkaTemplate.send("email-topic",jsonStr);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+//            String jsonStr = null;
+//            try {
+//                jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
+//                kafkaTemplate.send("email-topic",jsonStr);
+//            } catch (JsonProcessingException e) {
+//                throw new RuntimeException(e);
+//            }
         });
         return attendanceMapper.listEntityToResponse(attendances);
     }
@@ -96,7 +98,7 @@ public class AttendanceService {
         return attendanceOptional.get();
     }
 
-    public List<AttendanceResponse> getListByRoomAndDate(Long roomId, Date date) throws NotFoundException {
+    public List<AttendanceResponse> getListByRoomAndDate(Long roomId, LocalDate date) throws NotFoundException {
         log.info("Start retrieve attendance with room-id = %x and date = %y", roomId, date);
         List<Attendance> attendances = attendanceRepository.findAllByRoomIdAndDate(roomId, date);
         if(CollectionUtils.isEmpty(attendances)){
@@ -125,7 +127,7 @@ public class AttendanceService {
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
-    public List<AttendanceResponse> getListFilterByDate(Date fromDate, Date toDate, Long roomId)
+    public List<AttendanceResponse> getListFilterByDate(LocalDate fromDate, LocalDate toDate, Long roomId)
         throws NotFoundException {
         List<Attendance> attendances =  attendanceRepository.findByRoomIdAndRangeDate(fromDate, toDate, roomId);
         if(CollectionUtils.isEmpty(attendances)){
@@ -134,7 +136,7 @@ public class AttendanceService {
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
-    public List<AttendanceResponse> getListToProcessPrice(Date fromDate, Date toDate, Long roomId, Long studentId)
+    public List<AttendanceResponse> getListToProcessPrice(LocalDate fromDate, LocalDate toDate, Long roomId, Long studentId)
         throws NotFoundException {
         List<Attendance> attendances =  attendanceRepository.findAllByRoomIdAndStudentIdWithRangeDate(fromDate, toDate, roomId,studentId);
         if(CollectionUtils.isEmpty(attendances)){
@@ -151,8 +153,8 @@ public class AttendanceService {
             Attendance attendance = new Attendance();
             attendance.setStudent(studentRepository.findById(studentAttendance.getId()).get());
             attendance.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
-            attendance.setDate(createAttendanceRequest.getDate());
-            attendance.setMonth(getMonthAndYear(createAttendanceRequest.getDate()));
+            attendance.setDate(LocalDate.now());
+            attendance.setMonth(getMonthAndYear(Date.from(OffsetDateTime.now().toInstant())));
             attendance.setState(studentAttendance.getState());
             attendances.add(attendance);
         });
@@ -165,21 +167,21 @@ public class AttendanceService {
             log.info("Get attendance of student at lesson need to update");
             Attendance attendance = attendanceRepository.findByRoomIdAndStudentIdWithDateAndState(
                 updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
-                updateAttendanceRequest.getDate(), studentAttendance.getState());
+                changeFormatDate(updateAttendanceRequest.getDate()), studentAttendance.getState());
             // Neu khong tim thay thi tao moi 1 thong tin diem danh cua sinh vien do
             // Sinh vien khac state se khong tim thay
             if(Objects.isNull(attendance)){
                 log.info("Start update attendance for student");
                 Attendance attendanceToRemove = attendanceRepository.findByRoomIdAndStudentIdWithDate(
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
-                    updateAttendanceRequest.getDate());
+                        changeFormatDate(updateAttendanceRequest.getDate()));
                 attendanceRepository.delete(attendanceToRemove);
                 log.info("Finished delete old attendance for student with id = %s", attendanceToRemove.getStudent().getId());
                 // Sau khi xoa thong tin diem danh cu se them moi
                 Attendance attendanceUpdate = new Attendance();
                 attendanceUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
                 attendanceUpdate.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
-                attendanceUpdate.setDate(updateAttendanceRequest.getDate());
+                attendanceUpdate.setDate(changeFormatDate(updateAttendanceRequest.getDate()));
                 attendanceUpdate.setMonth(getMonthAndYear(updateAttendanceRequest.getDate()));
                 attendanceUpdate.setState(studentAttendance.getState());
                 log.info("Save new attendance for student with id = %s", attendanceUpdate.getStudent().getId());
@@ -188,53 +190,61 @@ public class AttendanceService {
             }
         });
         return attendanceRepository.findAllByRoomIdAndDate(updateAttendanceRequest.getRoomId(),
-            updateAttendanceRequest.getDate());
+                changeFormatDate(updateAttendanceRequest.getDate()));
     }
 
-    public boolean processPricePerMonth(Long roomId, Date date) throws NotFoundException {
-        // Lay danh sach diem danh cua thang
-        log.info("Start process to count price per month for student");
-        log.info("Start retrieve room with id = %s",roomId);
-        Room room = roomRepository.findById(roomId).get();
-        if(Objects.isNull(room)){
-            throw new NotFoundException("exception.notfound");
-        }
-        List<Student> students = room.getStudents();
-        if(CollectionUtils.isEmpty(students)){
-            throw new NotFoundException("exception.list.null");
-        }
-        List<Cost> costs = new ArrayList<>();
-
-        students.forEach(student -> {
-            log.info("Start create cost per month for student with id = %s", student.getId());
-            List<Attendance> attendancesOfStudents =
-                attendanceRepository.findAllByRoomIdAndStudentIdAndMonthAndState( getMonthAndYear(date),
-                    roomId, student.getId(), AttendanceState.PRESENT.getValue());
-            Cost cost = new Cost();
-            cost.setPrice(room.getPricePerLesson().subtract(
-                BigDecimal.valueOf(attendancesOfStudents.size())));
-            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            int month = localDate.getMonthValue();
-            cost.setMonth(month);
-            cost.setStudent(student);
-            cost.setNumberOfLesson(attendancesOfStudents.size());
-            cost.setRoom(room);
-            cost.setState(CostState.NOT_YET.getValue());
-            costs.add(cost);
-        });
-        costRepository.saveAll(costs);
-        log.info("Finished create cost for student in room with id =%s", roomId);
-        if(students.size() >= costs.size()){
-            return false;
-        }
-
-        return true;
-    }
+//    public boolean processPricePerMonth(Long roomId, Date date) throws NotFoundException {
+//        // Lay danh sach diem danh cua thang
+//        log.info("Start process to count price per month for student");
+//        log.info("Start retrieve room with id = %s",roomId);
+//        Room room = roomRepository.findById(roomId).get();
+//        if(Objects.isNull(room)){
+//            throw new NotFoundException("exception.notfound");
+//        }
+//        List<Student> students = room.getStudents();
+//        if(CollectionUtils.isEmpty(students)){
+//            throw new NotFoundException("exception.list.null");
+//        }
+//        List<Cost> costs = new ArrayList<>();
+//
+//        students.forEach(student -> {
+//            log.info("Start create cost per month for student with id = %s", student.getId());
+//            List<Attendance> attendancesOfStudents =
+//                attendanceRepository.findAllByRoomIdAndStudentIdAndMonthAndState( getMonthAndYear(date),
+//                    roomId, student.getId(), AttendanceState.PRESENT.getValue());
+//            Cost cost = new Cost();
+//            cost.setPrice(room.getPricePerLesson().subtract(
+//                BigDecimal.valueOf(attendancesOfStudents.size())));
+//            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//            int month = localDate.getMonthValue();
+//            cost.setMonth(month);
+//            cost.setStudent(student);
+//            cost.setNumberOfLesson(attendancesOfStudents.size());
+//            cost.setRoom(room);
+//            cost.setState(CostState.NOT_YET.getValue());
+//            costs.add(cost);
+//        });
+//        costRepository.saveAll(costs);
+//        log.info("Finished create cost for student in room with id =%s", roomId);
+//        if(students.size() >= costs.size()){
+//            return false;
+//        }
+//
+//        return true;
+//    }
 
     public String getMonthAndYear(Date date){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String strDate = dateFormat.format(date);
-        String[] splits = strDate.split("-");
-        return splits[0].concat("-"+splits[1]);
+        String[] splits = strDate.split("/");
+        return splits[1].concat("-"+splits[2]);
+    }
+
+    public LocalDate changeFormatDate(Date date){
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate = dateFormat.format(date);
+        DateTimeFormatter f = DateTimeFormatter.ofPattern( "dd/MM/yyyy" );
+        LocalDate ld = LocalDate.parse( strDate , f );
+        return ld;
     }
 }

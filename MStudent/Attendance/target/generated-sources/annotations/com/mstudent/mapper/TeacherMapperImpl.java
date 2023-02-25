@@ -6,14 +6,17 @@ import com.mstudent.model.dto.request.Teacher.UpdateTeacherRequest;
 import com.mstudent.model.dto.response.Teacher.TeacherRegisterResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
 import com.mstudent.model.entity.Teacher;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-16T09:46:26+0700",
+    date = "2023-02-26T00:02:37+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -32,7 +35,7 @@ public class TeacherMapperImpl implements TeacherMapper {
                 teacher.setUserName( createTeacherRequest.getUserName() );
             }
             if ( createTeacherRequest.getBirthday() != null ) {
-                teacher.setBirthday( createTeacherRequest.getBirthday() );
+                teacher.setBirthday( LocalDateTime.ofInstant( createTeacherRequest.getBirthday().toInstant(), ZoneOffset.UTC ).toLocalDate() );
             }
             if ( createTeacherRequest.getPassword() != null ) {
                 teacher.setPassword( createTeacherRequest.getPassword() );
@@ -78,7 +81,7 @@ public class TeacherMapperImpl implements TeacherMapper {
                 teacher.setUserName( updateTeacherRequest.getUserName() );
             }
             if ( updateTeacherRequest.getBirthday() != null ) {
-                teacher.setBirthday( updateTeacherRequest.getBirthday() );
+                teacher.setBirthday( LocalDateTime.ofInstant( updateTeacherRequest.getBirthday().toInstant(), ZoneOffset.UTC ).toLocalDate() );
             }
             if ( updateTeacherRequest.getPassword() != null ) {
                 teacher.setPassword( updateTeacherRequest.getPassword() );
@@ -113,7 +116,7 @@ public class TeacherMapperImpl implements TeacherMapper {
                 teacherResponse.setUserName( teacher.getUserName() );
             }
             if ( teacher.getBirthday() != null ) {
-                teacherResponse.setBirthday( teacher.getBirthday() );
+                teacherResponse.setBirthday( Date.from( teacher.getBirthday().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             if ( teacher.getPassword() != null ) {
                 teacherResponse.setPassword( teacher.getPassword() );
@@ -151,7 +154,7 @@ public class TeacherMapperImpl implements TeacherMapper {
                 teacherRegisterResponse.setUserName( teacher.getUserName() );
             }
             if ( teacher.getBirthday() != null ) {
-                teacherRegisterResponse.setBirthday( teacher.getBirthday() );
+                teacherRegisterResponse.setBirthday( Date.from( teacher.getBirthday().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             if ( teacher.getPassword() != null ) {
                 teacherRegisterResponse.setPassword( teacher.getPassword() );

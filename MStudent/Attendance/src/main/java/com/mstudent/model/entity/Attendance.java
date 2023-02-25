@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,8 +24,9 @@ public class Attendance {
     private Long id;
 
     @Column(name = "date")
-    @JsonFormat(pattern="dd-MM-yyyy")
-    private Date date;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    @Temporal(TemporalType.DATE)
+    private LocalDate date;
 
     @Column(name = "month")
     private String month;

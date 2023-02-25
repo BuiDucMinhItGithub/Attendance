@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class Teacher {
     private String userName;
 
     @Column(name = "birthday")
-    @JsonFormat(pattern="dd-MM-yyyy")
-    private Date birthday;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    @Temporal(TemporalType.DATE)
+    private LocalDate birthday;
 
     @Column(name = "password")
     private String password;

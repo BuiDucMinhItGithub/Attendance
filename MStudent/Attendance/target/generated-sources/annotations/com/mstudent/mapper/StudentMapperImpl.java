@@ -7,14 +7,17 @@ import com.mstudent.model.dto.response.Student.StudentFullResponse;
 import com.mstudent.model.dto.response.Student.StudentResponse;
 import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import com.mstudent.model.entity.Student;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-15T10:16:06+0700",
+    date = "2023-02-26T00:02:37+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -30,7 +33,7 @@ public class StudentMapperImpl implements StudentMapper {
                 student.setFullName( createStudentRequest.getFullName() );
             }
             if ( createStudentRequest.getBirthday() != null ) {
-                student.setBirthday( createStudentRequest.getBirthday() );
+                student.setBirthday( LocalDateTime.ofInstant( createStudentRequest.getBirthday().toInstant(), ZoneOffset.UTC ).toLocalDate() );
             }
         }
 
@@ -50,7 +53,7 @@ public class StudentMapperImpl implements StudentMapper {
                 student.setFullName( updateStudentRequest.getFullName() );
             }
             if ( updateStudentRequest.getBirthday() != null ) {
-                student.setBirthday( updateStudentRequest.getBirthday() );
+                student.setBirthday( LocalDateTime.ofInstant( updateStudentRequest.getBirthday().toInstant(), ZoneOffset.UTC ).toLocalDate() );
             }
             if ( updateStudentRequest.getState() != null ) {
                 student.setState( updateStudentRequest.getState() );
@@ -73,7 +76,7 @@ public class StudentMapperImpl implements StudentMapper {
                 studentFullResponse.setFullName( student.getFullName() );
             }
             if ( student.getBirthday() != null ) {
-                studentFullResponse.setBirthday( student.getBirthday() );
+                studentFullResponse.setBirthday( Date.from( student.getBirthday().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             if ( student.getState() != null ) {
                 studentFullResponse.setState( student.getState() );
@@ -186,7 +189,7 @@ public class StudentMapperImpl implements StudentMapper {
                 studentResponse.setFullName( student.getFullName() );
             }
             if ( student.getBirthday() != null ) {
-                studentResponse.setBirthday( student.getBirthday() );
+                studentResponse.setBirthday( Date.from( student.getBirthday().atStartOfDay( ZoneOffset.UTC ).toInstant() ) );
             }
             if ( student.getState() != null ) {
                 studentResponse.setState( student.getState() );
