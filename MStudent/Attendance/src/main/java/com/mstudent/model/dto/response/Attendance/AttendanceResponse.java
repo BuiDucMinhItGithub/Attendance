@@ -23,5 +23,5 @@ public class AttendanceResponse {
   private int month;
   private String state;
   private StudentResponse studentResponse;
-  private RoomAttendanceResponse room;
+  private RoomAttendanceResponse roomAttendanceResponse;
 }

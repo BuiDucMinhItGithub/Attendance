@@ -1,6 +1,8 @@
 package com.mstudent.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,9 +34,11 @@ public class Attendance {
 
     @OneToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnore
     private Student student;
 
     @OneToOne
     @JoinColumn(name = "room_id")
+    @JsonIgnore
     private Room room;
 }

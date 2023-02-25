@@ -11,12 +11,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendanceToProcessCostRequest {
-  private Long roomId;
-  @JsonFormat(pattern="dd-MM-yyyy")
-  private Date fromDate;
-  @JsonFormat(pattern="dd-MM-yyyy")
-  private Date toDate;
-  private Long studentId;
-
+public class AttendanceKafkaMessage {
+  private Long id;
+  private String date;
+  private String state;
+  private String studentName;
+  private String roomName;
+  private String type;
 }

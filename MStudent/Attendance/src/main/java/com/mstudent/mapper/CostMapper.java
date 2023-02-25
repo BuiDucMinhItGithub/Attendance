@@ -16,8 +16,8 @@ import org.mapstruct.factory.Mappers;
 public interface CostMapper {
   CostMapper INSTANCE = Mappers.getMapper(CostMapper.class);
 
-  @Mapping(target = "room", qualifiedByName = "entityToCostResponse")
-  @Mapping(target = "student", qualifiedByName = "entityToShortResponse")
+  @Mapping(target = "roomCostResponse", source = "room", qualifiedByName = "entityToCostResponse")
+  @Mapping(target = "studentShortResponse", source = "student", qualifiedByName = "entityToShortResponse")
   CostResponse entityToResponse(Cost cost);
 
   List<CostResponse> listEntityToResponse(List<Cost> costs);

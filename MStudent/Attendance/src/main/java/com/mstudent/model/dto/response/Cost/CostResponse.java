@@ -22,6 +22,6 @@ public class CostResponse {
   private int month;
   private String state;
   private BigDecimal price;
-  private StudentShortResponse student;
-  private RoomCostResponse room;
+  private StudentShortResponse studentShortResponse;
+  private RoomCostResponse roomCostResponse;
 }

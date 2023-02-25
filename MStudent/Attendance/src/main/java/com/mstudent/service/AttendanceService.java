@@ -1,9 +1,13 @@
 package com.mstudent.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mstudent.enums.AttendanceState;
 import com.mstudent.enums.CostState;
+import com.mstudent.enums.KafkaMessageType;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.AttendanceMapper;
+import com.mstudent.model.dto.request.Attendance.AttendanceKafkaMessage;
 import com.mstudent.model.dto.request.Attendance.CreateAttendanceRequest;
 import com.mstudent.model.dto.request.Attendance.StudentAttendance;
 import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
@@ -27,6 +31,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -34,6 +40,8 @@ import org.springframework.util.CollectionUtils;
 @Slf4j
 public class AttendanceService {
 
+    @Autowired
+    KafkaTemplate<String, String> kafkaTemplate;
     private final AttendanceRepository attendanceRepository;
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
@@ -49,9 +57,33 @@ public class AttendanceService {
         this.attendanceMapper = attendanceMapper;
     }
 
-    public List<AttendanceResponse> insert(CreateAttendanceRequest createAttendanceRequest){
+    public List<AttendanceResponse> insert(CreateAttendanceRequest createAttendanceRequest)
+        throws NotFoundException {
+        log.info("Start save attendance for student");
+        if(CollectionUtils.isEmpty(createAttendanceRequest.getStudentAttendances())){
+            throw new NotFoundException("exception.list.null");
+        }
         List<Attendance> attendances = mapRequestToEntity(createAttendanceRequest);
+        if(CollectionUtils.isEmpty(attendances)){
+            throw new NotFoundException("exception.list.null");
+        }
         attendanceRepository.saveAll(attendances);
+        attendances.forEach(attendance -> {
+            AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();
+            attendanceKafkaMessage.setDate(attendance.getDate().toString());
+            attendanceKafkaMessage.setState(attendance.getState());
+            attendanceKafkaMessage.setRoomName(attendance.getRoom().getName());
+            attendanceKafkaMessage.setStudentName(attendance.getStudent().getFullName());
+            attendanceKafkaMessage.setType(KafkaMessageType.EMAIL.getValue());
+            ObjectMapper Obj = new ObjectMapper();
+            String jsonStr = null;
+            try {
+                jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
+                kafkaTemplate.send("email-topic",jsonStr);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
@@ -203,6 +235,6 @@ public class AttendanceService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         String strDate = dateFormat.format(date);
         String[] splits = strDate.split("-");
-        return splits[0].concat(splits[1]);
+        return splits[0].concat("-"+splits[1]);
     }
 }

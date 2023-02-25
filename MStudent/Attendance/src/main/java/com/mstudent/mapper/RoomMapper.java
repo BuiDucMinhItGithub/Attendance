@@ -14,13 +14,14 @@ import org.mapstruct.factory.Mappers;
     nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
     nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
     collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-    uses = {StudentMapper.class})
+    uses = {StudentMapper.class, TeacherMapper.class})
 public interface RoomMapper {
     RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
-
+    @Mapping(target = "teacher", source = "teacherCreateRoom", qualifiedByName = "createRoomToEntity")
     Room createRequestToEntity(CreateRoomRequest createRoomRequest);
 
-    @Mapping(target = "students", qualifiedByName = "listUpdateInRoomToEntity")
+    @Mapping(target = "students", source = "updateStudentInRoomRequests", qualifiedByName = "listUpdateInRoomToEntity")
+    @Mapping(target = "teacher", source = "teacherCreateRoom", qualifiedByName = "createRoomToEntity")
     Room updateRequestToEntity(UpdateRoomRequest updateRoomRequest);
 
     RoomResponse entityToResponse(Room room);
@@ -32,7 +33,7 @@ public interface RoomMapper {
 
     List<RoomShortResponse> listEntityToShortResponse(List<Room> rooms);
 
-    @Mapping(target = "students", qualifiedByName = "listEntityToInRoomResponse")
+    @Mapping(target = "studentShortResponses", source = "students", qualifiedByName = "listEntityToInRoomResponse")
     RoomUpdateResponse entityToUpdateResponse(Room room);
 
     List<RoomResponse> listEntityToResponse(List<Room> rooms);
