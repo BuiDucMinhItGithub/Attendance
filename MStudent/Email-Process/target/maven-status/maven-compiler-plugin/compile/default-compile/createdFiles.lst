@@ -1,9 +1,16 @@
 com\mstudent\model\Notification$NotificationBuilder.class
 com\mstudent\repository\NotificationRepository.class
 com\mstudent\config\MailConfig.class
+com\mstudent\model\Room.class
+com\mstudent\enums\AttendanceState.class
+com\mstudent\enums\TypeNotification.class
+com\mstudent\controller\NotificationController.class
+com\mstudent\enums\EmailType.class
+com\mstudent\model\Attendance.class
+com\mstudent\model\Cost.class
+com\mstudent\model\Student.class
 com\mstudent\config\KafkaConfig.class
 com\mstudent\Main.class
 com\mstudent\model\Notification.class
 com\mstudent\service\NotificationService.class
 com\mstudent\config\MyConstants.class
-com\mstudent\controller\NotificationController.class
