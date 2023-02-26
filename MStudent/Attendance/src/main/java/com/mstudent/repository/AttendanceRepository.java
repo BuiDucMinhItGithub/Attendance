@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
   @Query("SELECT a FROM Attendance a JOIN Room b ON a.room.id = b.id WHERE a.room.id = :roomId AND a.date < :date ")
-  List<Attendance> findAllByRoomIdAndDate(@Param("roomId") Long roomId, @Param("roomId") LocalDate date);
+  List<Attendance> findAllByRoomIdAndDate(@Param("roomId") Long roomId, @Param("date") LocalDate date);
   @Query("SELECT a FROM Attendance a "
       + "JOIN Room b ON a.room.id = b.id "
       + "JOIN Student s ON a.student.id = s.id "

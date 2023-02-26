@@ -90,7 +90,7 @@ public class AttendanceService {
     }
 
     public Attendance getById(Long id) throws NotFoundException {
-        log.info("Start retrieve attendance with id = %s", id);
+        log.info("Start retrieve attendance with id = {}", id);
         Optional<Attendance> attendanceOptional = attendanceRepository.findById(id);
         if(!attendanceOptional.isPresent()){
             throw new NotFoundException("exception.notfound");
@@ -118,7 +118,7 @@ public class AttendanceService {
 
     public List<AttendanceResponse> update(UpdateAttendanceRequest updateAttendanceRequest)
         throws NotFoundException {
-        log.info("Start update attendance at date = %s",updateAttendanceRequest.getDate());
+        log.info("Start update attendance at date = {}",updateAttendanceRequest.getDate());
         List<Attendance> attendances = processUpdateRequest(updateAttendanceRequest);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
@@ -175,8 +175,10 @@ public class AttendanceService {
                 Attendance attendanceToRemove = attendanceRepository.findByRoomIdAndStudentIdWithDate(
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                         changeFormatDate(updateAttendanceRequest.getDate()));
-                attendanceRepository.delete(attendanceToRemove);
-                log.info("Finished delete old attendance for student with id = %s", attendanceToRemove.getStudent().getId());
+                if(!Objects.isNull(attendanceToRemove)){
+                    attendanceRepository.delete(attendanceToRemove);
+                    log.info("Finished delete old attendance for student with id = {}", attendanceToRemove.getStudent().getId());
+                }
                 // Sau khi xoa thong tin diem danh cu se them moi
                 Attendance attendanceUpdate = new Attendance();
                 attendanceUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
@@ -184,7 +186,7 @@ public class AttendanceService {
                 attendanceUpdate.setDate(changeFormatDate(updateAttendanceRequest.getDate()));
                 attendanceUpdate.setMonth(getMonthAndYear(updateAttendanceRequest.getDate()));
                 attendanceUpdate.setState(studentAttendance.getState());
-                log.info("Save new attendance for student with id = %s", attendanceUpdate.getStudent().getId());
+                log.info("Save new attendance for student with id = {}", attendanceUpdate.getStudent().getId());
                 attendanceRepository.save(attendanceUpdate);
                 // Gui kafka tai day
             }
