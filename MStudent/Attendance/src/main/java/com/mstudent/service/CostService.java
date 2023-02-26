@@ -37,30 +37,30 @@ public class CostService {
     return costRepository.save(cost);
   }
 
-  public CostResponse updateDone(Long id) throws NotFoundException {
-    Cost cost = costRepository.findById(id).get();
-    if(Objects.isNull(cost)){
-      throw new NotFoundException("exception.notfound");
-    }
-    AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();
-    attendanceKafkaMessage.setDate(String.valueOf(Date.from(OffsetDateTime.now().toInstant())));
-    attendanceKafkaMessage.setState(cost.getState());
-    attendanceKafkaMessage.setRoomName(cost.getRoom().getName());
-    attendanceKafkaMessage.setStudentName(cost.getStudent().getFullName());
-    attendanceKafkaMessage.setType(KafkaMessageType.COST.getValue());
-    cost.setState(CostState.DONE.getValue());
-    costRepository.save(cost);
-    ObjectMapper Obj = new ObjectMapper();
-    String jsonStr = null;
-    try {
-      jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
-      kafkaTemplate.send("cost-topic",jsonStr);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
-    return costMapper.entityToResponse(cost);
-  }
-
+//  public CostResponse updateDone(Long id) throws NotFoundException {
+//    Cost cost = costRepository.findById(id).get();
+//    if(Objects.isNull(cost)){
+//      throw new NotFoundException("exception.notfound");
+//    }
+//    AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();
+//    attendanceKafkaMessage.setDate(String.valueOf(Date.from(OffsetDateTime.now().toInstant())));
+//    attendanceKafkaMessage.setState(cost.getState());
+//    attendanceKafkaMessage.setRoomName(cost.getRoom().getName());
+//    attendanceKafkaMessage.setStudentName(cost.getStudent().getFullName());
+//    attendanceKafkaMessage.setType(KafkaMessageType.COST.getValue());
+//    cost.setState(CostState.DONE.getValue());
+//    costRepository.save(cost);
+//    ObjectMapper Obj = new ObjectMapper();
+//    String jsonStr = null;
+//    try {
+//      jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
+//      kafkaTemplate.send("cost-topic",jsonStr);
+//    } catch (JsonProcessingException e) {
+//      throw new RuntimeException(e);
+//    }
+//    return costMapper.entityToResponse(cost);
+//  }
+//
   public CostResponse getById(Long id) throws NotFoundException {
     Cost cost = costRepository.findById(id).get();
     if(Objects.isNull(cost)){
@@ -68,14 +68,14 @@ public class CostService {
     }
     return costMapper.entityToResponse(cost);
   }
-
-  public List<CostResponse> getAllByMonthAndRoom(CostFindByRoomAndMonth costFindByRoomAndMonth)
-      throws NotFoundException {
-    List<Cost> costs = costRepository.findAllByRoomAndMonth(costFindByRoomAndMonth.getRoomId(), costFindByRoomAndMonth.getMonth());
-    if(CollectionUtils.isEmpty(costs)){
-      throw new NotFoundException("exception.list.null");
-    }
-    return costMapper.listEntityToResponse(costs);
-  }
+//
+//  public List<CostResponse> getAllByMonthAndRoom(CostFindByRoomAndMonth costFindByRoomAndMonth)
+//      throws NotFoundException {
+//    List<Cost> costs = costRepository.findAllByRoomAndMonth(costFindByRoomAndMonth.getRoomId(), costFindByRoomAndMonth.getMonth());
+//    if(CollectionUtils.isEmpty(costs)){
+//      throw new NotFoundException("exception.list.null");
+//    }
+//    return costMapper.listEntityToResponse(costs);
+//  }
 
 }

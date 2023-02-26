@@ -22,19 +22,19 @@ public class CostApi {
     this.costService = costService;
   }
 
-  @PutMapping
-  public CostResponse update(Long id) throws NotFoundException {
-    return costService.updateDone(id);
-  }
+//  @PutMapping
+//  public CostResponse update(Long id) throws NotFoundException {
+//    return costService.updateDone(id);
+//  }
 
-  @GetMapping("/{id}")
-  public CostResponse getOne(@PathVariable Long id) throws NotFoundException {
-    return costService.getById(id);
-  }
-
-  @PostMapping("/list-in-month")
-  public List<CostResponse> getAll(@RequestBody CostFindByRoomAndMonth costFindByRoomAndMonth)
-      throws NotFoundException {
-    return costService.getAllByMonthAndRoom(costFindByRoomAndMonth);
-  }
+//  @GetMapping("/{id}")
+//  public CostResponse getOne(@PathVariable Long id) throws NotFoundException {
+//    return costService.getById(id);
+//  }
+//
+//  @PostMapping("/list-in-month")
+//  public List<CostResponse> getAll(@RequestBody CostFindByRoomAndMonth costFindByRoomAndMonth)
+//      throws NotFoundException {
+//    return costService.getAllByMonthAndRoom(costFindByRoomAndMonth);
+//  }
 }

@@ -2,8 +2,6 @@ package com.mstudent.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mstudent.enums.AttendanceState;
-import com.mstudent.enums.CostState;
 import com.mstudent.enums.KafkaMessageType;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.AttendanceMapper;
@@ -13,25 +11,20 @@ import com.mstudent.model.dto.request.Attendance.StudentAttendance;
 import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
 import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
 import com.mstudent.model.entity.Attendance;
-import com.mstudent.model.entity.Cost;
-import com.mstudent.model.entity.Room;
-import com.mstudent.model.entity.Student;
 import com.mstudent.repository.AttendanceRepository;
 import com.mstudent.repository.CostRepository;
 import com.mstudent.repository.RoomRepository;
 import com.mstudent.repository.StudentRepository;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import com.mstudent.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -49,14 +42,16 @@ public class AttendanceService {
     private final RoomRepository roomRepository;
     private final CostRepository costRepository;
     private final AttendanceMapper attendanceMapper;
+    private final DateUtils dateUtils;
 
     public AttendanceService(AttendanceRepository attendanceRepository, StudentRepository studentRepository, RoomRepository roomRepository,
-        CostRepository costRepository, AttendanceMapper attendanceMapper) {
+                             CostRepository costRepository, AttendanceMapper attendanceMapper, DateUtils dateUtils) {
         this.attendanceRepository = attendanceRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
         this.costRepository = costRepository;
         this.attendanceMapper = attendanceMapper;
+        this.dateUtils = dateUtils;
     }
 
     public List<AttendanceResponse> insert(CreateAttendanceRequest createAttendanceRequest)
@@ -78,13 +73,13 @@ public class AttendanceService {
             attendanceKafkaMessage.setStudentName(attendance.getStudent().getFullName());
             attendanceKafkaMessage.setType(KafkaMessageType.EMAIL.getValue());
             ObjectMapper Obj = new ObjectMapper();
-//            String jsonStr = null;
-//            try {
-//                jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
+            String jsonStr = null;
+            try {
+                jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
 //                kafkaTemplate.send("email-topic",jsonStr);
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         });
         return attendanceMapper.listEntityToResponse(attendances);
     }
@@ -99,7 +94,7 @@ public class AttendanceService {
     }
 
     public List<AttendanceResponse> getListByRoomAndDate(Long roomId, LocalDate date) throws NotFoundException {
-        log.info("Start retrieve attendance with room-id = %x and date = %y", roomId, date);
+        log.info("Start retrieve attendance with room-id = {} and date = {}", roomId, date);
         List<Attendance> attendances = attendanceRepository.findAllByRoomIdAndDate(roomId, date);
         if(CollectionUtils.isEmpty(attendances)){
             throw new NotFoundException("exception.list.null");
@@ -154,7 +149,7 @@ public class AttendanceService {
             attendance.setStudent(studentRepository.findById(studentAttendance.getId()).get());
             attendance.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
             attendance.setDate(LocalDate.now());
-            attendance.setMonth(getMonthAndYear(Date.from(OffsetDateTime.now().toInstant())));
+            attendance.setMonth(dateUtils.getMonthAndYear(Date.from(OffsetDateTime.now().toInstant())));
             attendance.setState(studentAttendance.getState());
             attendances.add(attendance);
         });
@@ -167,14 +162,14 @@ public class AttendanceService {
             log.info("Get attendance of student at lesson need to update");
             Attendance attendance = attendanceRepository.findByRoomIdAndStudentIdWithDateAndState(
                 updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
-                changeFormatDate(updateAttendanceRequest.getDate()), studentAttendance.getState());
+                    dateUtils.changeFormatDate(updateAttendanceRequest.getDate()), studentAttendance.getState());
             // Neu khong tim thay thi tao moi 1 thong tin diem danh cua sinh vien do
             // Sinh vien khac state se khong tim thay
             if(Objects.isNull(attendance)){
                 log.info("Start update attendance for student");
                 Attendance attendanceToRemove = attendanceRepository.findByRoomIdAndStudentIdWithDate(
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
-                        changeFormatDate(updateAttendanceRequest.getDate()));
+                        dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
                 if(!Objects.isNull(attendanceToRemove)){
                     attendanceRepository.delete(attendanceToRemove);
                     log.info("Finished delete old attendance for student with id = {}", attendanceToRemove.getStudent().getId());
@@ -183,8 +178,8 @@ public class AttendanceService {
                 Attendance attendanceUpdate = new Attendance();
                 attendanceUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
                 attendanceUpdate.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
-                attendanceUpdate.setDate(changeFormatDate(updateAttendanceRequest.getDate()));
-                attendanceUpdate.setMonth(getMonthAndYear(updateAttendanceRequest.getDate()));
+                attendanceUpdate.setDate(dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
+                attendanceUpdate.setMonth(dateUtils.getMonthAndYear(updateAttendanceRequest.getDate()));
                 attendanceUpdate.setState(studentAttendance.getState());
                 log.info("Save new attendance for student with id = {}", attendanceUpdate.getStudent().getId());
                 attendanceRepository.save(attendanceUpdate);
@@ -192,7 +187,7 @@ public class AttendanceService {
             }
         });
         return attendanceRepository.findAllByRoomIdAndDate(updateAttendanceRequest.getRoomId(),
-                changeFormatDate(updateAttendanceRequest.getDate()));
+                dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
     }
 
 //    public boolean processPricePerMonth(Long roomId, Date date) throws NotFoundException {
@@ -235,18 +230,5 @@ public class AttendanceService {
 //        return true;
 //    }
 
-    public String getMonthAndYear(Date date){
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String strDate = dateFormat.format(date);
-        String[] splits = strDate.split("/");
-        return splits[1].concat("-"+splits[2]);
-    }
 
-    public LocalDate changeFormatDate(Date date){
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String strDate = dateFormat.format(date);
-        DateTimeFormatter f = DateTimeFormatter.ofPattern( "dd/MM/yyyy" );
-        LocalDate ld = LocalDate.parse( strDate , f );
-        return ld;
-    }
 }

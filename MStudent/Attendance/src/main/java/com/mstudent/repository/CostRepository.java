@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CostRepository extends JpaRepository<Cost, Long> {
-  @Query("SELECT a FROM Cost a JOIN Room r ON a.room.id = r.id WHERE r.id = :roomId AND a.month = :month")
-  List<Cost> findAllByRoomAndMonth(Long roomId, int month);
+//  @Query("SELECT a FROM Cost a JOIN Room r ON a.room.id = r.id WHERE r.id = :roomId AND a.month = :month")
+//  List<Cost> findAllByRoomAndMonth(Long roomId, int month);
 }
