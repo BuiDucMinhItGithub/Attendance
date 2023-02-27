@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Cost-Process" />
       </profile>
       <profile name="Annotation profile for Attendance" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -32,9 +33,6 @@
         <module name="Email-Process" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Cost-Process" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
