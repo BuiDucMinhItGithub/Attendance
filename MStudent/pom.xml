@@ -11,6 +11,9 @@
     <modules>
         <module>Email-Process</module>
         <module>Attendance</module>
+      <module>Cost-Process</module>
+      <module>Cost-Process</module>
+        <module>Cost-Process</module>
     </modules>
 
     <parent>

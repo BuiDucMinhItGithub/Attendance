@@ -33,14 +33,13 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Attendance" target="9" />
-      <module name="Email-Process" target="17" />
-      <module name="MStudent" target="17" />
+      <module name="Cost-Process" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Attendance" options="-parameters -Amapstruct.defaultComponentModel=spring" />
+      <module name="Cost-Process" options="-parameters" />
       <module name="Email-Process" options="-parameters -Amapstruct.defaultComponentModel=spring" />
     </option>
   </component>

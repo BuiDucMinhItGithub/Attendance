@@ -207,6 +207,25 @@ public class AttendanceService {
                     attendanceToUpdate.setPrice(roomRepository.findById(updateAttendanceRequest.getRoomId()).get().getPricePerLesson());
                     log.info("Save new attendance for student with id = {}", attendanceToUpdate.getStudent().getId());
                     attendanceRepository.save(attendanceToUpdate);
+                    //will be moved to another service
+                    Cost costCheck = costRepository.findAllByRoomIdAndStudentIdAndMonth(updateAttendanceRequest.getRoomId(), attendanceToUpdate.getStudent().getId(),
+                        attendanceToUpdate.getMonth());
+                    if(!Objects.isNull(costCheck)){
+                        if(attendanceToUpdate.getState().equals(AttendanceState.PRESENT.getValue())){
+                            costCheck.setPrice(costCheck.getPrice().add(attendanceToUpdate.getPrice()));
+                        }else {
+                            costCheck.setPrice(costCheck.getPrice().subtract(attendanceToUpdate.getPrice()));
+                        }
+                        costRepository.save(costCheck);
+                    } else {
+                        Cost cost = new Cost();
+                        cost.setState(CostState.NOT_YET.getValue());
+                        cost.setStudent(attendance.getStudent());
+                        cost.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
+                        cost.setPrice(attendance.getPrice());
+                        cost.setMonth(attendance.getMonth());
+                        costRepository.save(cost);
+                    }
                 }
                 // Gui kafka tai day
             }
