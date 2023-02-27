@@ -80,7 +80,7 @@ public class Main {
             Room room1 = new Room(null,"room1", LocalDate.now(),LocalDate.now(),
                 teacher, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(70000),List.of(student), null);
             Room roomMock = new Room(null,"Math12", LocalDate.now(),LocalDate.now(),
-                    teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(80000),students, null);
+                    teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(70000),students, null);
             Room roomMock1 = new Room(null,"Math12 plus", LocalDate.now(),LocalDate.now(),
                     teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(80000),students, null);
             List<Room> rooms = new ArrayList<>();
@@ -91,39 +91,39 @@ public class Main {
 
 //            Mock attendance for student mock
             Attendance attendance = new Attendance(null,LocalDate.parse( "11/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock,roomMock);
             Attendance attendance2 = new Attendance(null,LocalDate.parse( "11/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock1,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock1,roomMock);
             Attendance attendance3 = new Attendance(null,LocalDate.parse( "11/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock2,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock2,roomMock);
             Attendance attendance4 = new Attendance(null,LocalDate.parse( "11/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock3,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock3,roomMock);
             Attendance attendance5 = new Attendance(null,LocalDate.parse( "11/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock4,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock4,roomMock);
 
             //Mock attendance for student mock
             Attendance attendance6 = new Attendance(null,LocalDate.parse( "12/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock,roomMock);
             Attendance attendance7 = new Attendance(null,LocalDate.parse( "12/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock1,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock1,roomMock);
             Attendance attendance8 = new Attendance(null,LocalDate.parse( "12/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock2,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock2,roomMock);
             Attendance attendance9 = new Attendance(null,LocalDate.parse( "12/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock3,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock3,roomMock);
             Attendance attendance10 = new Attendance(null,LocalDate.parse( "12/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock4,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock4,roomMock);
 
             //Mock attendance for student mock
             Attendance attendance11 = new Attendance(null,LocalDate.parse( "13/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock,roomMock);
             Attendance attendance12 = new Attendance(null,LocalDate.parse( "13/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock1,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock1,roomMock);
             Attendance attendance13 = new Attendance(null,LocalDate.parse( "13/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock2,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock2,roomMock);
             Attendance attendance14 = new Attendance(null,LocalDate.parse( "13/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock3,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock3,roomMock);
             Attendance attendance15 = new Attendance(null,LocalDate.parse( "13/02/2023" , f ),
-                    "02-2023",  AttendanceState.PRESENT.getValue(),studentMock4,roomMock);
+                    "02-2023",  AttendanceState.PRESENT.getValue(), BigDecimal.valueOf(70000),studentMock4,roomMock);
 
 
             List<Attendance> attendances = new ArrayList<>();

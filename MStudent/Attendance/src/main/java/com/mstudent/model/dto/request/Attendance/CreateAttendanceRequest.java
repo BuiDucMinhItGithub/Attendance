@@ -17,4 +17,6 @@ import java.util.List;
 public class CreateAttendanceRequest {
     private List<StudentAttendance> studentAttendances;
     private Long roomId;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private Date date;
 }

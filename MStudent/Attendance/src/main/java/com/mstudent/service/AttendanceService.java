@@ -2,6 +2,8 @@ package com.mstudent.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mstudent.enums.AttendanceState;
+import com.mstudent.enums.CostState;
 import com.mstudent.enums.KafkaMessageType;
 import com.mstudent.exception.NotFoundException;
 import com.mstudent.mapper.AttendanceMapper;
@@ -11,6 +13,7 @@ import com.mstudent.model.dto.request.Attendance.StudentAttendance;
 import com.mstudent.model.dto.request.Attendance.UpdateAttendanceRequest;
 import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
 import com.mstudent.model.entity.Attendance;
+import com.mstudent.model.entity.Cost;
 import com.mstudent.repository.AttendanceRepository;
 import com.mstudent.repository.CostRepository;
 import com.mstudent.repository.RoomRepository;
@@ -66,6 +69,26 @@ public class AttendanceService {
         }
         attendanceRepository.saveAll(attendances);
         attendances.forEach(attendance -> {
+            //check cost
+            Cost costCheck = costRepository.findAllByRoomIdAndStudentIdAndMonth(createAttendanceRequest.getRoomId(), attendance.getStudent().getId(),
+                attendance.getMonth());
+            if(attendance.getState().equals(AttendanceState.PRESENT.getValue())){
+                if(Objects.isNull(costCheck)){
+                    Cost cost = new Cost();
+                    cost.setState(CostState.NOT_YET.getValue());
+                    cost.setStudent(attendance.getStudent());
+                    cost.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
+                    cost.setPrice(attendance.getPrice());
+                    cost.setMonth(attendance.getMonth());
+                    costRepository.save(cost);
+                } else {
+                    costCheck.setPrice(costCheck.getPrice().add(attendance.getPrice()));
+                    costRepository.save(costCheck);
+                }
+            }
+
+            //end check cost
+
             AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();
             attendanceKafkaMessage.setDate(attendance.getDate().toString());
             attendanceKafkaMessage.setState(attendance.getState());
@@ -148,7 +171,8 @@ public class AttendanceService {
             Attendance attendance = new Attendance();
             attendance.setStudent(studentRepository.findById(studentAttendance.getId()).get());
             attendance.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
-            attendance.setDate(LocalDate.now());
+            attendance.setDate(dateUtils.changeFormatDate(createAttendanceRequest.getDate()));
+            attendance.setPrice(roomRepository.findById(createAttendanceRequest.getRoomId()).get().getPricePerLesson());
             attendance.setMonth(dateUtils.getMonthAndYear(Date.from(OffsetDateTime.now().toInstant())));
             attendance.setState(studentAttendance.getState());
             attendances.add(attendance);
@@ -167,22 +191,23 @@ public class AttendanceService {
             // Sinh vien khac state se khong tim thay
             if(Objects.isNull(attendance)){
                 log.info("Start update attendance for student");
-                Attendance attendanceToRemove = attendanceRepository.findByRoomIdAndStudentIdWithDate(
+                Attendance attendanceToUpdate = attendanceRepository.findByRoomIdAndStudentIdWithDate(
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                         dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
-                if(!Objects.isNull(attendanceToRemove)){
-                    attendanceRepository.delete(attendanceToRemove);
-                    log.info("Finished delete old attendance for student with id = {}", attendanceToRemove.getStudent().getId());
+                if(!Objects.isNull(attendanceToUpdate)){
+//                    attendanceRepository.delete(attendanceToRemove);
+                    log.info("Start edit old attendance for student with id = {}", attendanceToUpdate.getStudent().getId());
+                    // Sau khi xoa thong tin diem danh cu se them moi
+//                    Attendance attendanceUpdate = new Attendance();
+                    attendanceToUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
+                    attendanceToUpdate.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
+                    attendanceToUpdate.setDate(dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
+                    attendanceToUpdate.setMonth(dateUtils.getMonthAndYear(updateAttendanceRequest.getDate()));
+                    attendanceToUpdate.setState(studentAttendance.getState());
+                    attendanceToUpdate.setPrice(roomRepository.findById(updateAttendanceRequest.getRoomId()).get().getPricePerLesson());
+                    log.info("Save new attendance for student with id = {}", attendanceToUpdate.getStudent().getId());
+                    attendanceRepository.save(attendanceToUpdate);
                 }
-                // Sau khi xoa thong tin diem danh cu se them moi
-                Attendance attendanceUpdate = new Attendance();
-                attendanceUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
-                attendanceUpdate.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
-                attendanceUpdate.setDate(dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
-                attendanceUpdate.setMonth(dateUtils.getMonthAndYear(updateAttendanceRequest.getDate()));
-                attendanceUpdate.setState(studentAttendance.getState());
-                log.info("Save new attendance for student with id = {}", attendanceUpdate.getStudent().getId());
-                attendanceRepository.save(attendanceUpdate);
                 // Gui kafka tai day
             }
         });
