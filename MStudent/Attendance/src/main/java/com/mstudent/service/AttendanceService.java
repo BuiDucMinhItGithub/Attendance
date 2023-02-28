@@ -34,6 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -87,7 +88,7 @@ public class AttendanceService {
                         .queryParam("month",attendance.getMonth())
                         .build())
                     .retrieve()
-                    .onStatus(httpStatus -> HttpStatus.NOT_FOUND.equals(httpStatus) || HttpStatus.UNAUTHORIZED.equals(httpStatus), clientResponse -> Mono.empty())
+                    .onStatus(httpStatus -> !HttpStatus.OK.equals(httpStatus), this::handleErrors)
                     .bodyToMono(Cost.class).block();
             } catch (Exception e){
                 log.info(e.getMessage());
@@ -187,6 +188,13 @@ public class AttendanceService {
             throw new NotFoundException("exception.list.null");
         }
         return attendanceMapper.listEntityToResponse(attendances);
+    }
+
+    private Mono<Throwable> handleErrors(ClientResponse response ){
+        return response.bodyToMono(String.class).flatMap(body -> {
+            log.error("LOg errror");
+            return Mono.error(new Exception());
+        });
     }
 
 
