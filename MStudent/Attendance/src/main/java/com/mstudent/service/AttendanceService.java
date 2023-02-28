@@ -30,9 +30,12 @@ import java.util.Optional;
 import com.mstudent.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
@@ -40,6 +43,9 @@ public class AttendanceService {
 
     @Autowired
     KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    WebClient webClient;
     private final AttendanceRepository attendanceRepository;
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
@@ -70,21 +76,41 @@ public class AttendanceService {
         attendanceRepository.saveAll(attendances);
         attendances.forEach(attendance -> {
             //check cost
-            Cost costCheck = costRepository.findAllByRoomIdAndStudentIdAndMonth(createAttendanceRequest.getRoomId(), attendance.getStudent().getId(),
-                attendance.getMonth());
-            if(attendance.getState().equals(AttendanceState.PRESENT.getValue())){
-                if(Objects.isNull(costCheck)){
+//            Cost costCheck = costRepository.findAllByRoomIdAndStudentIdAndMonth(createAttendanceRequest.getRoomId(), attendance.getStudent().getId(),
+//                attendance.getMonth());
+            Cost costCheck = null;
+            try {
+                costCheck = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/room-student-month")
+                        .queryParam("roomId", createAttendanceRequest.getRoomId())
+                        .queryParam("studentId",attendance.getStudent().getId())
+                        .queryParam("month",attendance.getMonth())
+                        .build())
+                    .retrieve()
+                    .onStatus(httpStatus -> HttpStatus.NOT_FOUND.equals(httpStatus) || HttpStatus.UNAUTHORIZED.equals(httpStatus), clientResponse -> Mono.empty())
+                    .bodyToMono(Cost.class).block();
+            } catch (Exception e){
+                log.info(e.getMessage());
+            }
+
+            if(Objects.isNull(costCheck)){
+                if(attendance.getState().equals(AttendanceState.PRESENT.getValue())){
                     Cost cost = new Cost();
                     cost.setState(CostState.NOT_YET.getValue());
                     cost.setStudent(attendance.getStudent());
                     cost.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
                     cost.setPrice(attendance.getPrice());
                     cost.setMonth(attendance.getMonth());
-                    costRepository.save(cost);
-                } else {
-                    costCheck.setPrice(costCheck.getPrice().add(attendance.getPrice()));
-                    costRepository.save(costCheck);
+                    webClient.post()
+                        .uri(uriBuilder -> uriBuilder.path("").build())
+                        .body(Mono.just(cost), Cost.class)
+                        .retrieve()
+                        .bodyToMono(Cost.class);
+//                    costRepository.save(cost);
                 }
+            } else {
+                costCheck.setPrice(costCheck.getPrice().add(attendance.getPrice()));
+                costRepository.save(costCheck);
             }
 
             //end check cost

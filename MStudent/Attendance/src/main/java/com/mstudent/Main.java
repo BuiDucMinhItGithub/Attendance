@@ -1,6 +1,11 @@
 package com.mstudent;
 
-import com.mstudent.enums.*;
+import com.mstudent.enums.AttendanceState;
+import com.mstudent.enums.RoleType;
+import com.mstudent.enums.RoomState;
+import com.mstudent.enums.StudentState;
+import com.mstudent.enums.TeacherState;
+import com.mstudent.exception.NotFoundException;
 import com.mstudent.model.entity.Attendance;
 import com.mstudent.model.entity.Room;
 import com.mstudent.model.entity.Student;
@@ -10,26 +15,34 @@ import com.mstudent.repository.RoomRepository;
 import com.mstudent.repository.StudentRepository;
 import com.mstudent.repository.TeacherRepository;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class Main {
+
+    @Bean
+    public WebClient getWebClient(){
+        return WebClient.builder()
+            .baseUrl("http://localhost:8082/api/v1/cost")
+            .defaultCookie("cookie-name", "cookie-value")
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
