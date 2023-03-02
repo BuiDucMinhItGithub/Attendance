@@ -31,9 +31,11 @@ import com.mstudent.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -87,26 +89,27 @@ public class AttendanceService {
                         .queryParam("studentId",attendance.getStudent().getId())
                         .queryParam("month",attendance.getMonth())
                         .build())
-                    .retrieve()
-                    .onStatus(httpStatus -> !HttpStatus.OK.equals(httpStatus), this::handleErrors)
-                    .bodyToMono(Cost.class).block();
+                        .accept(MediaType.APPLICATION_JSON)
+                        .retrieve()
+                        .onStatus(httpStatus -> HttpStatus.NOT_FOUND.equals(httpStatus), this::handleErrors)
+                        .bodyToMono(Cost.class).onErrorReturn(new Cost()).block();
             } catch (Exception e){
                 log.info(e.getMessage());
             }
 
-            if(Objects.isNull(costCheck)){
+            if(Objects.isNull(costCheck.getId()) && Objects.isNull(costCheck.getPrice())){
                 if(attendance.getState().equals(AttendanceState.PRESENT.getValue())){
-                    Cost cost = new Cost();
+                    com.mstudent.model.dto.request.Cost.Cost cost = new com.mstudent.model.dto.request.Cost.Cost();
                     cost.setState(CostState.NOT_YET.getValue());
-                    cost.setStudent(attendance.getStudent());
-                    cost.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
+                    cost.setStudentId(attendance.getStudent().getId());
+                    cost.setRoomId(roomRepository.findById(createAttendanceRequest.getRoomId()).get().getId());
                     cost.setPrice(attendance.getPrice());
                     cost.setMonth(attendance.getMonth());
                     webClient.post()
-                        .uri(uriBuilder -> uriBuilder.path("").build())
-                        .body(Mono.just(cost), Cost.class)
+                        .uri(uriBuilder -> uriBuilder.build())
+                        .body(Mono.just(cost), com.mstudent.model.dto.request.Cost.Cost.class)
                         .retrieve()
-                        .bodyToMono(Cost.class);
+                        .bodyToMono(com.mstudent.model.dto.request.Cost.Cost.class).block();
 //                    costRepository.save(cost);
                 }
             } else {
@@ -191,7 +194,9 @@ public class AttendanceService {
     }
 
     private Mono<Throwable> handleErrors(ClientResponse response ){
-        return response.bodyToMono(String.class).flatMap(body -> {
+        return response.bodyToMono(String.class)
+                .onErrorResume(e -> Mono.error(new NotFoundException("Correct ID is required"+e)))
+                .onErrorReturn("Hello Stranger").flatMap(body -> {
             log.error("LOg errror");
             return Mono.error(new Exception());
         });
