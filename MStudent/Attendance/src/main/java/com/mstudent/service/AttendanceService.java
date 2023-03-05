@@ -117,7 +117,6 @@ public class AttendanceService {
             throw new NotFoundException("exception.list.null");
         }
         attendanceRepository.saveAll(attendances);
-        costCheck(attendances, updateAttendanceRequest.getRoomId());
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
@@ -158,7 +157,7 @@ public class AttendanceService {
             attendance.setRoom(roomRepository.findById(createAttendanceRequest.getRoomId()).get());
             attendance.setDate(dateUtils.changeFormatDate(createAttendanceRequest.getDate()));
             attendance.setPrice(roomRepository.findById(createAttendanceRequest.getRoomId()).get().getPricePerLesson());
-            attendance.setMonth(dateUtils.getMonthAndYear(Date.from(OffsetDateTime.now().toInstant())));
+            attendance.setMonth(dateUtils.getMonthAndYear(createAttendanceRequest.getDate()));
             attendance.setState(studentAttendance.getState());
             attendances.add(attendance);
         });
@@ -169,13 +168,14 @@ public class AttendanceService {
         List<StudentAttendance> studentAttendances = updateAttendanceRequest.getStudentAttendances();
         studentAttendances.forEach(studentAttendance -> {
             log.info("Get attendance of student at lesson need to update");
+            // Lay thong tin diem danh cua sinh vien theo request moi
             Attendance attendance = attendanceRepository.findByRoomIdAndStudentIdWithDateAndState(
                 updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                     dateUtils.changeFormatDate(updateAttendanceRequest.getDate()), studentAttendance.getState());
-            // Neu khong tim thay thi tao moi 1 thong tin diem danh cua sinh vien do
-            // Sinh vien khac state se khong tim thay
+            // Có ton tai thi update ko thi tao moi
             if(Objects.isNull(attendance)){
                 log.info("Start update attendance for student");
+                // Lay thong tin diem danh cua sinh vien theo ngay
                 Attendance attendanceToUpdate = attendanceRepository.findByRoomIdAndStudentIdWithDate(
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                         dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
@@ -190,8 +190,8 @@ public class AttendanceService {
                     log.info("Save new attendance for student with id = {}", attendanceToUpdate.getStudent().getId());
                     attendanceRepository.save(attendanceToUpdate);
                     // Cost check
-                    Cost costCheck = getFromWebClient(webClient, attendanceToUpdate.getRoom().getId(), attendance.getStudent().getId(),
-                            attendance.getMonth());
+                    Cost costCheck = getFromWebClient(webClient, attendanceToUpdate.getRoom().getId(), attendanceToUpdate.getStudent().getId(),
+                            attendanceToUpdate.getMonth());
 
                     if(!Objects.isNull(costCheck.getId()) && !Objects.isNull(costCheck.getPrice())){
                         if(attendanceToUpdate.getState().equals(AttendanceState.PRESENT.getValue())){
@@ -203,16 +203,25 @@ public class AttendanceService {
                     } else {
                         com.mstudent.model.dto.request.Cost.Cost cost = new com.mstudent.model.dto.request.Cost.Cost();
                         cost.setState(CostState.NOT_YET.getValue());
-                        cost.setStudentId(attendance.getStudent().getId());
+                        cost.setStudentId(studentRepository.findById(studentAttendance.getId()).get().getId());
                         cost.setRoomId(roomRepository.findById(updateAttendanceRequest.getRoomId()).get().getId());
-                        cost.setPrice(attendance.getPrice());
-                        cost.setMonth(attendance.getMonth());
+                        cost.setPrice(attendanceToUpdate.getPrice());
+                        cost.setMonth(attendanceToUpdate.getMonth());
                         // Save cost
                         postToWebClient(webClient, cost);
                     }
+                } else {
+                    com.mstudent.model.dto.request.Cost.Cost cost = new com.mstudent.model.dto.request.Cost.Cost();
+                    cost.setState(CostState.NOT_YET.getValue());
+                    cost.setStudentId(studentRepository.findById(studentAttendance.getId()).get().getId());
+                    cost.setRoomId(roomRepository.findById(updateAttendanceRequest.getRoomId()).get().getId());
+                    cost.setPrice(attendanceToUpdate.getPrice());
+                    cost.setMonth(attendanceToUpdate.getMonth());
+                    // Save cost
+                    postToWebClient(webClient, cost);
                 }
                 // Gui kafka tai day
-                sendMessageKafka(attendance);
+                sendMessageKafka(attendanceToUpdate);
             }
         });
         return attendanceRepository.findAllByRoomIdAndDate(updateAttendanceRequest.getRoomId(),
