@@ -67,10 +67,4 @@ public class AttendanceApi {
             dateUtils.changeFormatDate(attendanceToProcessCostRequest.getToDate()),
         attendanceToProcessCostRequest.getRoomId(), attendanceToProcessCostRequest.getStudentId());
   }
-
-//  @PostMapping("/process-cost")
-//  public boolean processCostPerMonthForStudent(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
-//      throws NotFoundException {
-//    return attendanceService.processPricePerMonth(attendanceTodayRequest.getRoomId(), attendanceTodayRequest.getDate());
-//  }
 }
