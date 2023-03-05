@@ -75,13 +75,13 @@ public class Main {
             teachers.add(teacherMock);
             teacherRepository.saveAll(teachers);
 
-            Student student = new Student(null, "Bot", LocalDate.now(),null, StudentState.ACTIVE.getValue(),null);
+            Student student = new Student(null, "Bot", LocalDate.now(),null, StudentState.ACTIVE.getValue());
             studentRepository.save(student);
-            Student studentMock = new Student(null, "Student Mock", LocalDate.now(),null, StudentState.ACTIVE.getValue(),null);
-            Student studentMock1 = new Student(null, "Student Mock1", LocalDate.now(),null, StudentState.ACTIVE.getValue(),null);
-            Student studentMock2 = new Student(null, "Student Mock2", LocalDate.now(),null, StudentState.ACTIVE.getValue(),null);
-            Student studentMock3 = new Student(null, "Student Mock3", LocalDate.now(),null, StudentState.ACTIVE.getValue(),null);
-            Student studentMock4 = new Student(null, "Student Mock4", LocalDate.now(),null, StudentState.ACTIVE.getValue(),null);
+            Student studentMock = new Student(null, "Student Mock", LocalDate.now(),null, StudentState.ACTIVE.getValue());
+            Student studentMock1 = new Student(null, "Student Mock1", LocalDate.now(),null, StudentState.ACTIVE.getValue());
+            Student studentMock2 = new Student(null, "Student Mock2", LocalDate.now(),null, StudentState.ACTIVE.getValue());
+            Student studentMock3 = new Student(null, "Student Mock3", LocalDate.now(),null, StudentState.ACTIVE.getValue());
+            Student studentMock4 = new Student(null, "Student Mock4", LocalDate.now(),null, StudentState.ACTIVE.getValue());
             List<Student> students = new ArrayList<>();
             students.add(studentMock);
             students.add(studentMock1);
@@ -91,11 +91,11 @@ public class Main {
             studentRepository.saveAll(students);
 
             Room room1 = new Room(null,"room1", LocalDate.now(),LocalDate.now(),
-                teacher, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(70000),List.of(student), null);
+                teacher, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(70000),List.of(student));
             Room roomMock = new Room(null,"Math12", LocalDate.now(),LocalDate.now(),
-                    teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(70000),students, null);
+                    teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(70000),students);
             Room roomMock1 = new Room(null,"Math12 plus", LocalDate.now(),LocalDate.now(),
-                    teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(80000),students, null);
+                    teacherMock, 0, RoomState.OPEN.getValue(), BigDecimal.valueOf(80000),students);
             List<Room> rooms = new ArrayList<>();
             rooms.add(room1);
             rooms.add(roomMock);

@@ -29,6 +29,7 @@ public class CostService {
 
   public void update(Cost cost){
     Cost cost1 = costRepository.findById(cost.getId()).get();
+    cost1.setPrice(cost.getPrice());
     costRepository.save(cost1);
   }
 }

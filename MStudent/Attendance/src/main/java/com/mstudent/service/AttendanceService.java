@@ -15,7 +15,6 @@ import com.mstudent.model.dto.response.Attendance.AttendanceResponse;
 import com.mstudent.model.entity.Attendance;
 import com.mstudent.model.entity.Cost;
 import com.mstudent.repository.AttendanceRepository;
-import com.mstudent.repository.CostRepository;
 import com.mstudent.repository.RoomRepository;
 import com.mstudent.repository.StudentRepository;
 
@@ -35,7 +34,6 @@ import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -52,16 +50,14 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
-    private final CostRepository costRepository;
     private final AttendanceMapper attendanceMapper;
     private final DateUtils dateUtils;
 
     public AttendanceService(AttendanceRepository attendanceRepository, StudentRepository studentRepository, RoomRepository roomRepository,
-                             CostRepository costRepository, AttendanceMapper attendanceMapper, DateUtils dateUtils) {
+                             AttendanceMapper attendanceMapper, DateUtils dateUtils) {
         this.attendanceRepository = attendanceRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
-        this.costRepository = costRepository;
         this.attendanceMapper = attendanceMapper;
         this.dateUtils = dateUtils;
     }
@@ -77,62 +73,11 @@ public class AttendanceService {
             throw new NotFoundException("exception.list.null");
         }
         attendanceRepository.saveAll(attendances);
+        // Check cost
+        costCheck(attendances, createAttendanceRequest.getRoomId());
+        // Send message Kafka
         attendances.forEach(attendance -> {
-            //check cost
-//            Cost costCheck = costRepository.findAllByRoomIdAndStudentIdAndMonth(createAttendanceRequest.getRoomId(), attendance.getStudent().getId(),
-//                attendance.getMonth());
-            Cost costCheck = null;
-            try {
-                costCheck = webClient.get()
-                    .uri(uriBuilder -> uriBuilder.path("/room-student-month")
-                        .queryParam("roomId", createAttendanceRequest.getRoomId())
-                        .queryParam("studentId",attendance.getStudent().getId())
-                        .queryParam("month",attendance.getMonth())
-                        .build())
-                        .accept(MediaType.APPLICATION_JSON)
-                        .retrieve()
-                        .onStatus(httpStatus -> HttpStatus.NOT_FOUND.equals(httpStatus), this::handleErrors)
-                        .bodyToMono(Cost.class).onErrorReturn(new Cost()).block();
-            } catch (Exception e){
-                log.info(e.getMessage());
-            }
-
-            if(Objects.isNull(costCheck.getId()) && Objects.isNull(costCheck.getPrice())){
-                if(attendance.getState().equals(AttendanceState.PRESENT.getValue())){
-                    com.mstudent.model.dto.request.Cost.Cost cost = new com.mstudent.model.dto.request.Cost.Cost();
-                    cost.setState(CostState.NOT_YET.getValue());
-                    cost.setStudentId(attendance.getStudent().getId());
-                    cost.setRoomId(roomRepository.findById(createAttendanceRequest.getRoomId()).get().getId());
-                    cost.setPrice(attendance.getPrice());
-                    cost.setMonth(attendance.getMonth());
-                    webClient.post()
-                        .uri(uriBuilder -> uriBuilder.build())
-                        .body(Mono.just(cost), com.mstudent.model.dto.request.Cost.Cost.class)
-                        .retrieve()
-                        .bodyToMono(com.mstudent.model.dto.request.Cost.Cost.class).block();
-//                    costRepository.save(cost);
-                }
-            } else {
-                costCheck.setPrice(costCheck.getPrice().add(attendance.getPrice()));
-                costRepository.save(costCheck);
-            }
-
-            //end check cost
-
-            AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();
-            attendanceKafkaMessage.setDate(attendance.getDate().toString());
-            attendanceKafkaMessage.setState(attendance.getState());
-            attendanceKafkaMessage.setRoomName(attendance.getRoom().getName());
-            attendanceKafkaMessage.setStudentName(attendance.getStudent().getFullName());
-            attendanceKafkaMessage.setType(KafkaMessageType.EMAIL.getValue());
-            ObjectMapper Obj = new ObjectMapper();
-            String jsonStr = null;
-            try {
-                jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
-//                kafkaTemplate.send("email-topic",jsonStr);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+           sendMessageKafka(attendance);
         });
         return attendanceMapper.listEntityToResponse(attendances);
     }
@@ -172,6 +117,7 @@ public class AttendanceService {
             throw new NotFoundException("exception.list.null");
         }
         attendanceRepository.saveAll(attendances);
+        costCheck(attendances, updateAttendanceRequest.getRoomId());
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
@@ -234,10 +180,7 @@ public class AttendanceService {
                     updateAttendanceRequest.getRoomId(), studentAttendance.getId(),
                         dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
                 if(!Objects.isNull(attendanceToUpdate)){
-//                    attendanceRepository.delete(attendanceToRemove);
                     log.info("Start edit old attendance for student with id = {}", attendanceToUpdate.getStudent().getId());
-                    // Sau khi xoa thong tin diem danh cu se them moi
-//                    Attendance attendanceUpdate = new Attendance();
                     attendanceToUpdate.setStudent(studentRepository.findById(studentAttendance.getId()).get());
                     attendanceToUpdate.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
                     attendanceToUpdate.setDate(dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
@@ -246,72 +189,112 @@ public class AttendanceService {
                     attendanceToUpdate.setPrice(roomRepository.findById(updateAttendanceRequest.getRoomId()).get().getPricePerLesson());
                     log.info("Save new attendance for student with id = {}", attendanceToUpdate.getStudent().getId());
                     attendanceRepository.save(attendanceToUpdate);
-                    //will be moved to another service
-                    Cost costCheck = costRepository.findAllByRoomIdAndStudentIdAndMonth(updateAttendanceRequest.getRoomId(), attendanceToUpdate.getStudent().getId(),
-                        attendanceToUpdate.getMonth());
-                    if(!Objects.isNull(costCheck)){
+                    // Cost check
+                    Cost costCheck = getFromWebClient(webClient, attendanceToUpdate.getRoom().getId(), attendance.getStudent().getId(),
+                            attendance.getMonth());
+
+                    if(!Objects.isNull(costCheck.getId()) && !Objects.isNull(costCheck.getPrice())){
                         if(attendanceToUpdate.getState().equals(AttendanceState.PRESENT.getValue())){
                             costCheck.setPrice(costCheck.getPrice().add(attendanceToUpdate.getPrice()));
                         }else {
                             costCheck.setPrice(costCheck.getPrice().subtract(attendanceToUpdate.getPrice()));
                         }
-                        costRepository.save(costCheck);
+                        putToWebClient(webClient,costCheck);
                     } else {
-                        Cost cost = new Cost();
+                        com.mstudent.model.dto.request.Cost.Cost cost = new com.mstudent.model.dto.request.Cost.Cost();
                         cost.setState(CostState.NOT_YET.getValue());
-                        cost.setStudent(attendance.getStudent());
-                        cost.setRoom(roomRepository.findById(updateAttendanceRequest.getRoomId()).get());
+                        cost.setStudentId(attendance.getStudent().getId());
+                        cost.setRoomId(roomRepository.findById(updateAttendanceRequest.getRoomId()).get().getId());
                         cost.setPrice(attendance.getPrice());
                         cost.setMonth(attendance.getMonth());
-                        costRepository.save(cost);
+                        // Save cost
+                        postToWebClient(webClient, cost);
                     }
                 }
                 // Gui kafka tai day
+                sendMessageKafka(attendance);
             }
         });
         return attendanceRepository.findAllByRoomIdAndDate(updateAttendanceRequest.getRoomId(),
                 dateUtils.changeFormatDate(updateAttendanceRequest.getDate()));
     }
 
-//    public boolean processPricePerMonth(Long roomId, Date date) throws NotFoundException {
-//        // Lay danh sach diem danh cua thang
-//        log.info("Start process to count price per month for student");
-//        log.info("Start retrieve room with id = %s",roomId);
-//        Room room = roomRepository.findById(roomId).get();
-//        if(Objects.isNull(room)){
-//            throw new NotFoundException("exception.notfound");
-//        }
-//        List<Student> students = room.getStudents();
-//        if(CollectionUtils.isEmpty(students)){
-//            throw new NotFoundException("exception.list.null");
-//        }
-//        List<Cost> costs = new ArrayList<>();
-//
-//        students.forEach(student -> {
-//            log.info("Start create cost per month for student with id = %s", student.getId());
-//            List<Attendance> attendancesOfStudents =
-//                attendanceRepository.findAllByRoomIdAndStudentIdAndMonthAndState( getMonthAndYear(date),
-//                    roomId, student.getId(), AttendanceState.PRESENT.getValue());
-//            Cost cost = new Cost();
-//            cost.setPrice(room.getPricePerLesson().subtract(
-//                BigDecimal.valueOf(attendancesOfStudents.size())));
-//            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-//            int month = localDate.getMonthValue();
-//            cost.setMonth(month);
-//            cost.setStudent(student);
-//            cost.setNumberOfLesson(attendancesOfStudents.size());
-//            cost.setRoom(room);
-//            cost.setState(CostState.NOT_YET.getValue());
-//            costs.add(cost);
-//        });
-//        costRepository.saveAll(costs);
-//        log.info("Finished create cost for student in room with id =%s", roomId);
-//        if(students.size() >= costs.size()){
-//            return false;
-//        }
-//
-//        return true;
-//    }
+
+    public void costCheck(List<Attendance> attendances, Long roomId){
+        attendances.forEach(attendance -> {
+            //check cost
+            Cost costCheck = getFromWebClient(webClient,roomId, attendance.getStudent().getId(), attendance.getMonth());
+
+            if(Objects.isNull(costCheck.getId()) && Objects.isNull(costCheck.getPrice())){
+                if(attendance.getState().equals(AttendanceState.PRESENT.getValue())){
+                    com.mstudent.model.dto.request.Cost.Cost cost = new com.mstudent.model.dto.request.Cost.Cost();
+                    cost.setState(CostState.NOT_YET.getValue());
+                    cost.setStudentId(attendance.getStudent().getId());
+                    cost.setRoomId(roomRepository.findById(roomId).get().getId());
+                    cost.setPrice(attendance.getPrice());
+                    cost.setMonth(attendance.getMonth());
+                    // save cost
+                    postToWebClient(webClient, cost);
+                }
+            } else {
+                costCheck.setPrice(costCheck.getPrice().add(attendance.getPrice()));
+                // update cost
+                putToWebClient(webClient,costCheck);
+            }
+        });
+    }
+
+    public void sendMessageKafka(Attendance attendance){
+        AttendanceKafkaMessage attendanceKafkaMessage = new AttendanceKafkaMessage();
+        attendanceKafkaMessage.setDate(attendance.getDate().toString());
+        attendanceKafkaMessage.setState(attendance.getState());
+        attendanceKafkaMessage.setRoomName(attendance.getRoom().getName());
+        attendanceKafkaMessage.setStudentName(attendance.getStudent().getFullName());
+        attendanceKafkaMessage.setType(KafkaMessageType.EMAIL.getValue());
+        ObjectMapper Obj = new ObjectMapper();
+        String jsonStr = null;
+        try {
+            jsonStr = Obj.writeValueAsString(attendanceKafkaMessage);
+//                kafkaTemplate.send("email-topic",jsonStr);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Cost getFromWebClient(WebClient webClient, Long roomId, Long studentId, String month){
+        Cost costCheck = null;
+        try {
+            costCheck = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/room-student-month")
+                            .queryParam("roomId", roomId)
+                            .queryParam("studentId",studentId)
+                            .queryParam("month",month)
+                            .build())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .onStatus(httpStatus -> HttpStatus.NOT_FOUND.equals(httpStatus), this::handleErrors)
+                    .bodyToMono(Cost.class).onErrorReturn(new Cost()).block();
+        } catch (Exception e){
+            log.info(e.getMessage());
+        }
+        return costCheck;
+    }
+
+    public com.mstudent.model.dto.request.Cost.Cost postToWebClient(WebClient webClient, com.mstudent.model.dto.request.Cost.Cost cost){
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder.build())
+                .body(Mono.just(cost), com.mstudent.model.dto.request.Cost.Cost.class)
+                .retrieve()
+                .bodyToMono(com.mstudent.model.dto.request.Cost.Cost.class).block();
+    }
+
+    public com.mstudent.model.dto.request.Cost.Cost putToWebClient(WebClient webClient, Cost cost){
+        return webClient.put()
+                .uri(uriBuilder -> uriBuilder.build())
+                .body(Mono.just(cost), com.mstudent.model.dto.request.Cost.Cost.class)
+                .retrieve()
+                .bodyToMono(com.mstudent.model.dto.request.Cost.Cost.class).block();
+    }
 
 
 }

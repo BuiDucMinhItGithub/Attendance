@@ -36,6 +36,4 @@ public class Student {
 
     private String state;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Cost> costs;
 }

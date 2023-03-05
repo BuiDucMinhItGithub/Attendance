@@ -53,7 +53,4 @@ public class Room {
     @ManyToMany
     @JoinTable(name = "student_room", joinColumns = @JoinColumn(name = "room_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     private List<Student> students;
-
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Cost> costs;
 }

@@ -5,12 +5,7 @@ import com.computer.service.CostService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Objects;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/cost")
@@ -35,5 +30,10 @@ public class CostController {
   @PostMapping
   public void insert(@RequestBody Cost cost){
     costService.insert(cost);
+  }
+
+  @PutMapping
+  public void update(@RequestBody Cost cost){
+    costService.update(cost);
   }
 }
