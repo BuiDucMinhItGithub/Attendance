@@ -65,6 +65,7 @@ com\mstudent\model\dto\response\Student\StudentResponse.class
 com\mstudent\model\dto\response\Room\RoomUpdateResponse.class
 com\mstudent\model\dto\response\Teacher\TeacherRegisterResponse.class
 com\mstudent\controller\AuthApi.class
+com\mstudent\config\SecurityConfig$1.class
 com\mstudent\exception\NotFoundException.class
 com\mstudent\repository\StudentRepository.class
 com\mstudent\enums\RoleType.class

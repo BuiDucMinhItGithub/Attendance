@@ -27,6 +27,7 @@ public class RoomApi {
       return roomService.getRoomByTeacher(id);
   }
   @PostMapping
+  @CrossOrigin(origins = "*")
   public ResponseEntity<RoomCreateResponse> insert(@RequestBody CreateRoomRequest createRoomRequest){
     return ResponseEntity.ok(roomService.insert(createRoomRequest));
   }

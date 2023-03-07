@@ -18,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
@@ -51,33 +53,52 @@ public class SecurityConfig{
     }
 
     @Bean
+    public WebMvcConfigurer configure() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry reg) {
+                reg.addMapping("/**")
+                    .allowedOrigins("http://localhost:3000")
+                    .allowedHeaders("*")
+                    .allowedMethods("GET","POST","PUT","DELETE")
+                    .allowCredentials(false)
+                    .maxAge(86400);
+            }
+        };
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and()
             .csrf()
-            .disable()
-            .authorizeHttpRequests()
-            .requestMatchers("/api/v1/room/**","/api/v1/teacher/**","/api/v1/student/**","/api/v1/attendance/**","/api/v1/cost/**")
-            .hasRole(RoleType.TEACHER.getRole())
-            .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/admin/**")
-                .hasRole(RoleType.ADMIN.getRole())
-                .and()
-            .authorizeHttpRequests()
-            .requestMatchers("/api/v1/auth/**")
-            .permitAll()
-            .and()
-            .authorizeHttpRequests()
-            .requestMatchers("/api/**").authenticated()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(restAuthenticationEntryPoint())
-            .accessDeniedHandler(accessDeniedHandler())
-            .and()
-            .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+            .disable();
+//            .authorizeHttpRequests()
+//            .requestMatchers("/api/v1/teacher/**","/api/v1/student/**","/api/v1/attendance/**","/api/v1/cost/**")
+//            .hasRole(RoleType.TEACHER.getRole())
+//            .and()
+//            .authorizeHttpRequests()
+//            .requestMatchers("/api/v1/admin/**")
+//            .hasRole(RoleType.ADMIN.getRole())
+//            .and()
+//            .authorizeHttpRequests()
+//            .requestMatchers("/api/v1/room")
+//            .permitAll()
+//            .and()
+//            .authorizeHttpRequests()
+//            .requestMatchers("/api/v1/auth/**")
+//            .permitAll()
+//            .and()
+//            .authorizeHttpRequests()
+//            .requestMatchers("/api/**").authenticated()
+//            .and()
+//            .sessionManagement()
+//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//            .and()
+//            .exceptionHandling()
+//            .authenticationEntryPoint(restAuthenticationEntryPoint())
+//            .accessDeniedHandler(accessDeniedHandler())
+//            .and()
+//            .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
