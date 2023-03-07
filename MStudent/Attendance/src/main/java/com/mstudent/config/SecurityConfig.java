@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -71,34 +72,37 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and()
             .csrf()
-            .disable();
-//            .authorizeHttpRequests()
-//            .requestMatchers("/api/v1/teacher/**","/api/v1/student/**","/api/v1/attendance/**","/api/v1/cost/**")
-//            .hasRole(RoleType.TEACHER.getRole())
-//            .and()
-//            .authorizeHttpRequests()
-//            .requestMatchers("/api/v1/admin/**")
-//            .hasRole(RoleType.ADMIN.getRole())
-//            .and()
-//            .authorizeHttpRequests()
-//            .requestMatchers("/api/v1/room")
-//            .permitAll()
-//            .and()
-//            .authorizeHttpRequests()
-//            .requestMatchers("/api/v1/auth/**")
-//            .permitAll()
-//            .and()
-//            .authorizeHttpRequests()
-//            .requestMatchers("/api/**").authenticated()
-//            .and()
-//            .sessionManagement()
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            .and()
-//            .exceptionHandling()
-//            .authenticationEntryPoint(restAuthenticationEntryPoint())
-//            .accessDeniedHandler(accessDeniedHandler())
-//            .and()
-//            .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+            .disable()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/v1/teacher/**","/api/v1/student/**","/api/v1/attendance/**","/api/v1/cost/**")
+            .hasRole(RoleType.TEACHER.getRole())
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/v1/admin/**")
+            .hasRole(RoleType.ADMIN.getRole())
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/v1/room")
+            .permitAll()
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/v1/auth/**")
+            .permitAll()
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/**").authenticated()
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(restAuthenticationEntryPoint())
+            .accessDeniedHandler(accessDeniedHandler())
+            .and()
+            .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+            .logout()
+            .logoutUrl("/api/v1/auth/logout")
+            .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext()));
 
         return http.build();
     }
