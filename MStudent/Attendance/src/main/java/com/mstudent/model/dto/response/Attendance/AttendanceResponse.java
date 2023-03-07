@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import com.mstudent.model.dto.response.Student.StudentResponse;
+import com.mstudent.model.dto.response.Student.StudentShortResponse;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,6 @@ public class AttendanceResponse {
   private LocalDate date;
   private String month;
   private String state;
-  private StudentResponse studentResponse;
+  private StudentShortResponse studentShortResponse;
   private RoomAttendanceResponse roomAttendanceResponse;
 }

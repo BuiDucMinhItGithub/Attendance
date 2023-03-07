@@ -2,9 +2,8 @@ package com.mstudent.controller;
 
 import com.mstudent.config.JwtTokenProvider;
 import com.mstudent.exception.NotFoundException;
-import com.mstudent.model.base.JwtResponse;
-import com.mstudent.model.base.LoginRequest;
-import com.mstudent.model.base.RefreshToken;
+import com.mstudent.exception.TokenRefreshException;
+import com.mstudent.model.base.*;
 import com.mstudent.model.dto.request.Teacher.CreateTeacherRequest;
 import com.mstudent.model.dto.response.Teacher.TeacherRegisterResponse;
 import com.mstudent.model.dto.response.Teacher.TeacherResponse;
@@ -59,6 +58,21 @@ public class AuthApi {
   @GetMapping("/logout")
   public ResponseEntity<String> logout(){
     return ResponseEntity.ok("logout successfully");
+  }
+
+  @PostMapping("/refreshtoken")
+  public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+    String requestRefreshToken = request.getRefreshToken();
+
+    return jwtService.findByToken(requestRefreshToken)
+            .map(jwtService::verifyExpiration)
+            .map(RefreshToken::getTeacher)
+            .map(user -> {
+              String token = jwtService.generateTokenFromUsername(user.getUserName());
+              return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken,"Bearer"));
+            })
+            .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                    "Refresh token is not in database!"));
   }
 
 

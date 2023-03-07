@@ -16,6 +16,7 @@ import org.mapstruct.factory.Mappers;
 public interface AttendanceMapper {
     AttendanceMapper INSTANCE = Mappers.getMapper(AttendanceMapper.class);
     @Mapping(target = "roomAttendanceResponse", source = "room", qualifiedByName = "entityToRoomAttendance")
+    @Mapping(target = "studentShortResponse", source = "student", qualifiedByName = "entityToShortResponse")
     AttendanceResponse entityToResponse(Attendance attendance);
 
     List<AttendanceResponse> listEntityToResponse(List<Attendance> attendances);

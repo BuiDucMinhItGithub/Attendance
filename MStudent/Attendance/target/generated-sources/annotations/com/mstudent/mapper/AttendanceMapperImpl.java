@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-03-06T15:04:10+0700",
+    date = "2023-03-07T22:12:54+0700",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -18,6 +18,8 @@ public class AttendanceMapperImpl implements AttendanceMapper {
 
     @Autowired
     private RoomMapper roomMapper;
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Override
     public AttendanceResponse entityToResponse(Attendance attendance) {
@@ -27,6 +29,9 @@ public class AttendanceMapperImpl implements AttendanceMapper {
         if ( attendance != null ) {
             if ( attendance.getRoom() != null ) {
                 attendanceResponse.setRoomAttendanceResponse( roomMapper.entityToRoomAttendance( attendance.getRoom() ) );
+            }
+            if ( attendance.getStudent() != null ) {
+                attendanceResponse.setStudentShortResponse( studentMapper.entityToShortResponse( attendance.getStudent() ) );
             }
             if ( attendance.getId() != null ) {
                 attendanceResponse.setId( attendance.getId() );
