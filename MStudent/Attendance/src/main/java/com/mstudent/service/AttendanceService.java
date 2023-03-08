@@ -82,13 +82,13 @@ public class AttendanceService {
         return attendanceMapper.listEntityToResponse(attendances);
     }
 
-    public Attendance getById(Long id) throws NotFoundException {
+    public AttendanceResponse getById(Long id) throws NotFoundException {
         log.info("Start retrieve attendance with id = {}", id);
         Optional<Attendance> attendanceOptional = attendanceRepository.findById(id);
         if(!attendanceOptional.isPresent()){
             throw new NotFoundException("exception.notfound");
         }
-        return attendanceOptional.get();
+        return attendanceMapper.entityToResponse(attendanceOptional.get());
     }
 
     public List<AttendanceResponse> getListByRoomAndDate(Long roomId, LocalDate date) throws NotFoundException {

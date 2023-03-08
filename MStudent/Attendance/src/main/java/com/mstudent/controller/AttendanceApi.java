@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.mstudent.utils.DateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,11 +42,16 @@ public class AttendanceApi {
       throws NotFoundException {
     return attendanceService.insert(createAttendanceRequest);
   }
+  @GetMapping("/{id}")
+  public AttendanceResponse getDetailById(@PathVariable Long id) throws NotFoundException {
+    return attendanceService.getById(id);
+  }
 
   @PostMapping("/attendance-today")
   public List<AttendanceResponse> getListAttendanceByRoomAndDate(@RequestBody AttendanceTodayRequest attendanceTodayRequest)
       throws NotFoundException {
-    return attendanceService.getListByRoomAndDate(attendanceTodayRequest.getRoomId(),dateUtils.changeFormatDate(attendanceTodayRequest.getDate()));
+    return attendanceService.getListByRoomAndDate(attendanceTodayRequest.getRoomId(),
+        dateUtils.changeFormatDate(attendanceTodayRequest.getDate()));
   }
 
   @GetMapping("/list-all")
